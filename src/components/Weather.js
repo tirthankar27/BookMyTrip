@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Spinner from "./Spinner";
+
 export default class Weather extends Component {
   constructor() {
     super();
@@ -11,7 +13,7 @@ export default class Weather extends Component {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
-        let url = `http://api.weatherapi.com/v1/current.json?key=d5eaef7be67b410a966163325250307&q=${lat},${lon}&aqi=no`;
+        let url = `https://api.weatherapi.com/v1/current.json?key=d5eaef7be67b410a966163325250307&q=${lat},${lon}&aqi=no`;
         let data = await fetch(url);
         let weatherData = await data.json();
         this.setState({ weather: weatherData });
@@ -21,7 +23,7 @@ export default class Weather extends Component {
   render() {
     const { weather } = this.state;
     if (!weather) {
-      return <div>Loading weather...</div>;
+      return <div className="container d-flex justify-content-center align-items-center"><Spinner/></div>;
     }
     let { location, current } = weather;
     let cardStyle = {
