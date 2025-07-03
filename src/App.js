@@ -6,13 +6,13 @@ import PromoCarousel from "./components/PromoCarousel";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import About from "./components/About";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
   return (
-    <Router>
+    <BrowserRouter basename="/BookMyTrip">
       <div
         style={{
           backgroundColor: darkMode ? "#212529" : "#f8f9fa",
@@ -34,7 +34,7 @@ function App() {
         </div>
         <Footer />
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 
