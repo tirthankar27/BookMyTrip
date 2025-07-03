@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/BookMyTrip/static/css/main.10f67b43.css",
-    "main.js": "/BookMyTrip/static/js/main.85a26f0f.js",
+    "main.js": "/BookMyTrip/static/js/main.bf2ea195.js",
     "static/js/453.98e79eef.chunk.js": "/BookMyTrip/static/js/453.98e79eef.chunk.js",
     "static/media/images4.png": "/BookMyTrip/static/media/images4.f992d8ff09a6d0627f3c.png",
     "static/media/images2.png": "/BookMyTrip/static/media/images2.be9bf288b9110adccdd3.png",
@@ -10,11 +10,11 @@
     "static/media/images1.png": "/BookMyTrip/static/media/images1.e0e407dd0b84fba3cd45.png",
     "index.html": "/BookMyTrip/index.html",
     "main.10f67b43.css.map": "/BookMyTrip/static/css/main.10f67b43.css.map",
-    "main.85a26f0f.js.map": "/BookMyTrip/static/js/main.85a26f0f.js.map",
+    "main.bf2ea195.js.map": "/BookMyTrip/static/js/main.bf2ea195.js.map",
     "453.98e79eef.chunk.js.map": "/BookMyTrip/static/js/453.98e79eef.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.10f67b43.css",
-    "static/js/main.85a26f0f.js"
+    "static/js/main.bf2ea195.js"
   ]
 }
