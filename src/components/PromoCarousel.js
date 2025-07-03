@@ -49,12 +49,6 @@ export default function PromoCarousel() {
             </div>
             <div className="carousel-item">
               <img src={img2} className="d-block w-100" alt="img2" style={{ height: "700px", objectFit: "cover" }}/>
-              <div className="carousel-caption d-none d-md-block">
-                <h5 style={{color: 'green'}}>Amazing cashbacks on card/UPI*</h5>
-                <p style={{color: 'green'}}>
-                  Pay using Credi Cards or UPI to get exciting cash prizes.
-                </p>
-              </div>
             </div>
             <div className="carousel-item">
               <img src={img3} className="d-block w-100" alt="img3" style={{ height: "700px", objectFit: "cover" }}/>
@@ -67,12 +61,6 @@ export default function PromoCarousel() {
             </div>
             <div className="carousel-item">
               <img src={img4} className="d-block w-100" alt="img4" style={{ height: "700px", objectFit: "cover" }}/>
-              <div className="carousel-caption d-none d-md-block">
-                <h5 style={{color: 'green'}}>Exciting offer for our New Users</h5>
-                <p style={{color: 'green'}}>
-                  Get 15% off on first booking*
-                </p>
-              </div>
             </div>
           </div>
           <button

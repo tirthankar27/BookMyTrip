@@ -29,7 +29,7 @@ function App() {
         <div className="container my-3">
           <Routes>
             <Route exact path="/about" element={<About />}/>
-            <Route exact path="/home" element={<><Searchbus darkMode={darkMode} /> <PromoCarousel /></>}/>
+            <Route exact path="/" element={<><Searchbus darkMode={darkMode} /> <PromoCarousel /></>}/>
           </Routes>
         </div>
         <Footer />
