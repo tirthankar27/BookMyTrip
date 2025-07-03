@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/logo3.png";
-
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 export default function Navbar(props) {
   const navClass = props.darkMode ? "navbar bg-dark navbar-expand-lg bg-body-tertiary" : "navbar navbar-expand-lg bg-body-tertiary";
   return (
@@ -11,7 +11,7 @@ export default function Navbar(props) {
         {...props.darkMode ? {"data-bs-theme":"dark"} : {}}
       >
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <Link className="navbar-brand" to="/home">
             <img
               src={logo}
               alt="Logo"
@@ -19,7 +19,7 @@ export default function Navbar(props) {
               height="42"
               className="d-inline-block align-text-top"
             />
-          </a>
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -34,14 +34,14 @@ export default function Navbar(props) {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
+                <Link className="nav-link active" aria-current="page" to="/home">
                   Home
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/">
+                <Link className="nav-link" to="/about">
                   About Us
-                </a>
+                </Link>
               </li>
             </ul>
             <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-4">

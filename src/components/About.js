@@ -1,0 +1,41 @@
+import React from "react";
+
+export default function About() {
+  return (
+    <div>
+      <h1>About BookMyTrip</h1>
+      <p>
+        At BookMyTrip, we’re redefining the way you travel. Whether you're
+        planning a spontaneous getaway, a business trip, or heading home for the
+        holidays, we make bus booking easy, fast, and reliable.
+      </p>
+      <h2>Why Choose Us?</h2>
+      <ul>
+        <li>Wide Network: Book buses from trusted operators across India.</li>
+        <li>
+          Real-Time Availability: Know exactly which seats are free — no
+          surprises.
+        </li>
+        <li>
+          Secure Payments: Pay with confidence using our encrypted gateway.
+        </li>
+        <li>
+          User-Friendly Interface: Designed for comfort on desktop and mobile.
+        </li>
+        <li>24/7 Customer Support: We're here to help, anytime you need us.</li>
+      </ul>
+      <h2>Our Mission</h2>
+      <p>
+        To make intercity bus travel affordable, accessible, and hassle-free for
+        everyone. With just a few clicks, you can book your ride and enjoy the
+        journey ahead.
+      </p>
+      <h2>Our Vision</h2>
+      <p>
+        We aim to be India’s most trusted bus booking platform, connecting
+        millions of travelers with seamless transportation solutions — one trip
+        at a time.
+      </p>
+    </div>
+  );
+}
