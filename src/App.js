@@ -7,6 +7,9 @@ import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import About from "./components/About";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
+import Weather from "./components/Weather";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -31,7 +34,10 @@ function App() {
         <div className="container my-3" style={{ flex: 1 }}>
           <Routes>
             <Route exact path="/about" element={<About />}/>
+            <Route exact path="/weather" element={<Weather />}/>
             <Route exact path="/" element={<><Searchbus darkMode={darkMode} /> <PromoCarousel /></>}/>
+            <Route exact path='/login' element={<Login darkMode={darkMode} />}/>
+            <Route exact path='/signup' element={<SignUp darkMode={darkMode} />}/>
           </Routes>
         </div>
         <Footer />
