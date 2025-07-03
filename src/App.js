@@ -15,6 +15,8 @@ function App() {
     <BrowserRouter basename="/BookMyTrip">
       <div
         style={{
+          display: "flex",
+          flexDirection: "column",
           backgroundColor: darkMode ? "#212529" : "#f8f9fa",
           color: darkMode ? "white" : "black",
           minHeight: "100vh",
@@ -26,7 +28,7 @@ function App() {
           toggleDarkMode={toggleDarkMode}
         />
         <Alert darkMode={darkMode} />
-        <div className="container my-3">
+        <div className="container my-3" style={{ flex: 1 }}>
           <Routes>
             <Route exact path="/about" element={<About />}/>
             <Route exact path="/" element={<><Searchbus darkMode={darkMode} /> <PromoCarousel /></>}/>

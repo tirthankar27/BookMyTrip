@@ -7,7 +7,7 @@ import img4 from "../assets/images4.png";
 export default function PromoCarousel() {
   return (
     <div className="d-flex justify-content-center">
-      <div className="container w-50">
+      <div className="container" style={{ maxWidth: "800px" }}>
         <div id="carouselExampleCaptions" className="carousel slide">
           <div className="carousel-indicators">
             <button
@@ -48,7 +48,7 @@ export default function PromoCarousel() {
               </div>
             </div>
             <div className="carousel-item">
-              <img src={img2} className="d-block w-100" alt="img2" style={{ height: "700px", objectFit: "cover" }}/>
+              <img src={img2} className="d-block w-100 carousel-img" alt="img2"/>
             </div>
             <div className="carousel-item">
               <img src={img3} className="d-block w-100" alt="img3" style={{ height: "700px", objectFit: "cover" }}/>

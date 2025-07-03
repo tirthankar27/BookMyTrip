@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/logo3.png";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation} from "react-router-dom";
 export default function Navbar(props) {
   const navClass = props.darkMode ? "navbar bg-dark navbar-expand-lg bg-body-tertiary" : "navbar navbar-expand-lg bg-body-tertiary";
+  const location = useLocation();
   return (
     <div>
       <nav
@@ -34,19 +35,19 @@ export default function Navbar(props) {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">
+                <Link className={location.pathname !== "/about"? "nav-link fs-5 active" : "nav-link fs-5"} aria-current="page" to="/">
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/about">
+                <Link className={location.pathname !== "/about"? "nav-link fs-5" : "nav-link fs-5 active"} to="/about">
                   About Us
                 </Link>
               </li>
             </ul>
             <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-4">
               <a
-                className="nav-link active"
+                className="nav-link fs-5"
                 aria-current="page"
                 href="/"
                 style={{ color: props.darkMode ? "white" : "black" }}
@@ -54,7 +55,7 @@ export default function Navbar(props) {
                 Login
               </a>
               <a
-                className="nav-link active"
+                className="nav-link fs-5"
                 aria-current="page"
                 href="/"
                 style={{ color: props.darkMode ?"white" : "black" }}
