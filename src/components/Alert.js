@@ -1,3 +1,4 @@
+import React from "react";
 export default function Alert(props) {
   let alertType = props.darkMode ? "info" : "warning";
   return (

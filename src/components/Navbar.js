@@ -1,13 +1,14 @@
+import React from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/logo3.png";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation} from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 export default function Navbar(props) {
   const navClass = props.darkMode ? "navbar bg-dark navbar-expand-lg bg-body-tertiary" : "navbar navbar-expand-lg bg-body-tertiary";
   const location = useLocation();
   return (
     <div>
       <nav
-        className={navClass}
+        className={`${navClass} fixed-top`}
         {...props.darkMode ? {"data-bs-theme":"dark"} : {}}
       >
         <div className="container-fluid">

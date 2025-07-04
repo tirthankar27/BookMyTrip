@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import password from "../assets/password.png";
 
 export default function Login(props) {
