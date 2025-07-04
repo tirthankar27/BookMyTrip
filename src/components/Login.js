@@ -17,7 +17,7 @@ export default function Login(props) {
     ? "container bg-dark p-4 rounded"
     : "container bg-light p-4 rounded";
   return (
-    <div className="row">
+    <div className="row mt-5">
       <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
         <div className="text-center">
           <h1>Welcome Back</h1>
@@ -83,10 +83,16 @@ export default function Login(props) {
             </label>
           </div>
         </div>
-        <div className="input-group flex-nowrap">
+        <div className="input-group flex-nowrap mb-4">
           <button type="button" class="btn btn-outline-success">
             Login
           </button>
+        </div>
+        <div className="input-group flex-nowrap">
+          <p>Lost your password?</p>
+        </div>
+        <div className="input-group flex-nowrap justify-content-center">
+          <p>By clicking on "Login" you agree to <u>Terms of Service</u> | <u>Privacy Policy</u></p>
         </div>
       </div>
     </div>

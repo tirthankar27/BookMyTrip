@@ -39,14 +39,14 @@ export default class Weather extends Component {
     };
 
     return (
-      <div className="container d-flex justify-content-center align-items-center">
-        <div className="card" style={{ width: "18rem" }}>
+      <div className="container d-flex justify-content-center align-items-center mt-5">
+        <div className="card w-25 shadow-sm" style={{ width: "18rem" }}>
           <img
             src={`https:${current.condition.icon}`}
             className="card-img-top"
             alt={current.condition.text}
           />
-          <div className="card-body" style={cardStyle}>
+          <div className="card-body " style={cardStyle}>
             <h5 className="card-title">{location.name}</h5>
             <h6 className="card-subtitle mb-2 text-body-secondary">
               {location.country}
@@ -54,7 +54,7 @@ export default class Weather extends Component {
             <h6 className="card-subtitle mb-2 text-body-secondary">
               {current.condition.text}
             </h6>
-            <p className="card-text">{current.temp_c}°C</p>
+            <h5 className="card-text">{current.temp_c}°C</h5>
             <p className="card-text">Wind Speed: {current.wind_kph} kmph</p>
           </div>
         </div>
