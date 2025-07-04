@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/logo3.png";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation} from "react-router-dom";

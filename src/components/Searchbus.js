@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 export default function Searchbus(props) {
   useEffect(() => {
@@ -8,7 +8,7 @@ export default function Searchbus(props) {
         props.loadingRef.current.complete();
       }, 10);
     }
-  }, []);
+  }, [props.loadingRef]);
   const inputClass = props.darkMode
     ? "form-control bg-secondary text-white border-light"
     : "form-control";

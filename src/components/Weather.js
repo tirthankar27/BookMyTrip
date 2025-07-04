@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import Spinner from "./Spinner";
 
 export default class Weather extends Component {

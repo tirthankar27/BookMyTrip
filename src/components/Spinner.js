@@ -1,4 +1,3 @@
-import React from 'react'
 import spinner from "../assets/loading.gif"
 export default function Spinner() {
   return (

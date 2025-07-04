@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 export default function About(props) {
   useEffect(() => {
@@ -8,7 +8,7 @@ export default function About(props) {
         props.loadingRef.current.complete();
       }, 10);
     }
-  }, []);
+  }, [props.loadingRef]);
   return (
     <div>
       <h1>About BookMyTrip</h1>

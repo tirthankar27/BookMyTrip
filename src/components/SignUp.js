@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import password from "../assets/password.png";
 
 export default function SignUp(props) {
@@ -9,7 +9,7 @@ export default function SignUp(props) {
         props.loadingRef.current.complete();
       }, 10);
     }
-  }, []);
+  }, [props.loadingRef]);
   const inputClass = props.darkMode
     ? "form-control bg-secondary text-white border-light"
     : "form-control";
