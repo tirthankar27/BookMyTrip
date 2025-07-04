@@ -9,23 +9,30 @@ export default class Weather extends Component {
     };
   }
   async componentDidMount() {
+    if (this.props.loadingRef?.current) {
+      this.props.loadingRef.current.continuousStart();
+    }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
-        let url = `https://api.weatherapi.com/v1/current.json?key=d5eaef7be67b410a966163325250307&q=${lat},${lon}&aqi=no`;
+        let url = `https://api.weatherapi.com/v1/current.json?key=${this.props.apiKey}&q=${lat},${lon}&aqi=no`;
         let data = await fetch(url);
         let weatherData = await data.json();
-        this.setState({ weather: weatherData });
+        this.setState({ weather: weatherData }, ()=>{
+          if (this.props.loadingRef?.current) {
+              this.props.loadingRef.current.complete();
+            }
+        });
       });
     }
   }
   render() {
     const { weather } = this.state;
-    if (!weather) {
+    if (!weather || !weather.current || !weather.location) {
       return <div className="container d-flex justify-content-center align-items-center"><Spinner/></div>;
     }
-    let { location, current } = weather;
+    const { location, current } = weather;
     let cardStyle = {
       backgroundColor: current.temp_c < 25.0 ? "#e0f7fa" : "#fff3e0",
       color: current.temp_c < 25.0 ? "#006064" : "#e65100   ",

@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import password from "../assets/password.png";
 
 export default function Login(props) {
+  useEffect(() => {
+    if (props.loadingRef?.current) {
+      props.loadingRef.current.continuousStart();
+      setTimeout(() => {
+        props.loadingRef.current.complete();
+      }, 10);
+    }
+  }, []);
   const inputClass = props.darkMode
     ? "form-control bg-secondary text-white border-light"
     : "form-control";

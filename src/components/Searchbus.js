@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function Searchbus(props) {
+  useEffect(() => {
+    if (props.loadingRef?.current) {
+      props.loadingRef.current.continuousStart();
+      setTimeout(() => {
+        props.loadingRef.current.complete();
+      }, 10);
+    }
+  }, []);
   const inputClass = props.darkMode
     ? "form-control bg-secondary text-white border-light"
     : "form-control";
@@ -29,16 +37,12 @@ export default function Searchbus(props) {
             />
           </div>
           <div className="col">
-            <input
-              type="date"
-              className={inputClass}
-              aria-label="Date"
-            />
+            <input type="date" className={inputClass} aria-label="Date" />
           </div>
           <div className="col">
-              <button type="submit" className={"btn btn-outline-success"}>
-                Search
-              </button>
+            <button type="submit" className={"btn btn-outline-success"}>
+              Search
+            </button>
           </div>
         </div>
       </div>

@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-export default function About() {
+export default function About(props) {
+  useEffect(() => {
+    if (props.loadingRef?.current) {
+      props.loadingRef.current.continuousStart();
+      setTimeout(() => {
+        props.loadingRef.current.complete();
+      }, 10);
+    }
+  }, []);
   return (
     <div>
       <h1>About BookMyTrip</h1>
