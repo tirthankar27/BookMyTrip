@@ -7,8 +7,8 @@ const { body, validationResult } = require("express-validator");
 //Get bcrypt
 const bcrypt = require("bcryptjs");
 //Get webtoken
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 //Create a user using: POST "/api/auth/createUser"
 router.post(
@@ -33,7 +33,7 @@ router.post(
           .json({ error: "Sorry user with this email already exist" });
       }
       const salt = await bcrypt.genSalt(10);
-      const secPass = await bcrypt.hash(req.body.password,salt);
+      const secPass = await bcrypt.hash(req.body.password, salt);
       //Create new user with given details from json(req.body)
       user = await User.create({
         username: req.body.username,
@@ -41,15 +41,60 @@ router.post(
         password: secPass,
       });
       const data = {
-        user:{
-            id: user.id
-        }
-      }
-      const authToken=jwt.sign('data',process.env.JWT_SECRET)
-      res.json({authToken});
+        user: {
+          id: user.id,
+        },
+      };
+      const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      res.json({ authToken });
     } catch (err) {
       console.error(err);
-      res.status(500).send("Som error occured");
+      res.status(500).send("Some error occured");
+    }
+  }
+);
+
+//Authenticate a user "/api/auth/login"
+router.post(
+  "/login",
+  [
+    body("email", "Enter a valid email").isEmail(),
+    body("password", "passowrd can not be blank").exists(),
+  ],
+  async (req, res) => {
+    //Check if all the validation passess
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+    // Get the email and password entered by user
+    const { email, password } = req.body;
+    try {
+      //Try to get the email with user given email
+      let user = await User.findOne({ email });
+      if (!user) {
+        return res
+          .status(400)
+          .json({ error: "Please provide correct credentials" });
+      }
+      //if exist then compare for the password
+      const passowrdCompare = await bcrypt.compare(password, user.password);
+      if (!passowrdCompare) {
+        return res
+          .status(400)
+          .json({ error: "Please provide correct credentials" });
+      }
+      //if password and email is fine then send the user the id(id of the data stored in the )
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      res.json({ authToken });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Some internal server error occured");
     }
   }
 );
