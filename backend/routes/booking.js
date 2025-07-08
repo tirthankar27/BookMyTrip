@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Booking = require("../models/Userbookings");
+const fetchUser = require("../middleware/fetchUser");
 
 //Create a booking '/api/booking/makebooking'
-router.post("/makebooking", async (req, res) => {
+router.post("/makebooking", fetchUser,async (req, res) => {
   try {
     const { passenger, email, doj, source, destination, seatnumber, fare } =
       req.body;
@@ -23,6 +24,7 @@ router.post("/makebooking", async (req, res) => {
       });
     }
     const booking = await Booking.create({
+      user: req.user.id,
       passenger,
       email,
       doj,
@@ -39,9 +41,19 @@ router.post("/makebooking", async (req, res) => {
         message: "Seat already booked for this date.",
       });
     }
-    console.error(error);
+    console.error(err);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
+});
+
+//Fetch all bookings '/api/booking/fetchbookings'
+router.get("/fetchbookings", fetchUser, async (req, res) => {
+    try {
+        const bookings = await Booking.find({ user: req.user.id });
+        res.json(bookings);
+    } catch (err) {
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 module.exports = router;

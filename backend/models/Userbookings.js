@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const user_bookings = new Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user_from_emails',
+        required: true,
+    },
     passenger: {
         type: String,
         required: true,
