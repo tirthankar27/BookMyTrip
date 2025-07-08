@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import password from "../assets/password.png";
+import { Link } from "react-router-dom";
 
 export default function Login(props) {
   useEffect(() => {
@@ -55,22 +56,6 @@ export default function Login(props) {
           />
         </div>
         <div className="input-group flex-nowrap mb-3">
-          <span className="input-group-text" id="addon-wrapping">
-            <img
-              src={password}
-              alt="password"
-              className="img-fluid"
-              style={{ maxHeight: "20px", maxWidth: "15px" }}
-            />
-          </span>
-          <input
-            type="password"
-            className={inputClass}
-            placeholder="re enter password"
-            id="reinputPassword"
-          />
-        </div>
-        <div className="input-group flex-nowrap mb-3">
           <div className="form-check">
             <input
               className="form-check-input"
@@ -89,10 +74,7 @@ export default function Login(props) {
           </button>
         </div>
         <div className="input-group flex-nowrap">
-          <p>Lost your password?</p>
-        </div>
-        <div className="input-group flex-nowrap justify-content-center">
-          <p>By clicking on "Login" you agree to <u>Terms of Service</u> | <u>Privacy Policy</u></p>
+          <Link to="/signup">Create an account</Link>
         </div>
       </div>
     </div>

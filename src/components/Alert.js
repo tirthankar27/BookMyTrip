@@ -2,7 +2,16 @@ import React from "react";
 export default function Alert(props) {
   let alertType = props.darkMode ? "info" : "warning";
   return (
-    <div style={{height: "50px"}}>
+    <div
+      style={{
+        height: "60px",
+        top: "56px",
+        left: 0,
+        right: 0,
+        zIndex: 1051,
+        position: "fixed",
+      }}
+    >
       <div
         className={`alert alert-${alertType} alert-dismissible fade show mb-3`}
         role="alert"

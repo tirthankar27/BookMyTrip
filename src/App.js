@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import Home from "./components/Home";
 import Searchbus from "./components/Searchbus";
-import PromoCarousel from "./components/PromoCarousel";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import About from "./components/About";
@@ -11,12 +11,14 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Weather from "./components/Weather";
 import LoadingBar from "react-top-loading-bar";
+import "particles.js"
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
+  const signupEndpoint = process.env.REACT_APP_SIGN_UP;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
-  const loadingRef = useRef(null)
+  const loadingRef = useRef(null);
   return (
     <BrowserRouter basename="/BookMyTrip">
       <div
@@ -33,15 +35,41 @@ function App() {
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
         />
-       <LoadingBar color="#76B947" ref={loadingRef} />
+        <LoadingBar color="#76B947" ref={loadingRef} />
         <Alert darkMode={darkMode} />
-        <div className="container my-3" style={{ flex: 1 }}>
+        <div
+          className="container my-3"
+          style={{ flex: 1, paddingTop: "120px" }}
+        >
           <Routes>
-            <Route exact path="/about" element={<About loadingRef={loadingRef} />}/>
-            <Route exact path="/weather" element={<Weather apiKey={apiKey} loadingRef={loadingRef}/>}/>
-            <Route exact path="/" element={<><Searchbus darkMode={darkMode} loadingRef={loadingRef}/> <PromoCarousel /></>}/>
-            <Route exact path='/login' element={<Login darkMode={darkMode} loadingRef={loadingRef}/>}/>
-            <Route exact path='/signup' element={<SignUp darkMode={darkMode} loadingRef={loadingRef}/>}/>
+            <Route
+              exact
+              path="/about"
+              element={<About loadingRef={loadingRef} />}
+            />
+            <Route
+              exact
+              path="/weather"
+              element={<Weather apiKey={apiKey} loadingRef={loadingRef} />}
+            />
+            <Route exact path="/" element={<Home loadingRef={loadingRef} />} />
+            <Route
+              exact
+              path="/searchbus"
+              element={
+                <Searchbus darkMode={darkMode} loadingRef={loadingRef} />
+              }
+            />
+            <Route
+              exact
+              path="/login"
+              element={<Login darkMode={darkMode} loadingRef={loadingRef} />}
+            />
+            <Route
+              exact
+              path="/signup"
+              element={<SignUp darkMode={darkMode} signupendpoint={signupEndpoint} loadingRef={loadingRef} />}
+            />
           </Routes>
         </div>
         <Footer />
