@@ -56,10 +56,41 @@ router.post(
 //Fetch all bookings '/api/booking/fetchbookings'
 router.get("/fetchbookings", fetchUser, async (req, res) => {
   try {
+    //Get the booking associated with the logged in user
     const bookings = await Booking.find({ user: req.user.id });
     res.json(bookings);
   } catch (err) {
     res.status(500).send("Internal Server Error");
+  }
+});
+
+//Delete specific bookings '/api/booking/deletebooking'
+router.delete("/deletebooking", fetchUser, async (req, res) => {
+  try {
+    //Get the bookingid
+    const { bookingId } = req.body;
+    if (!bookingId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Booking ID is required" });
+    }
+    //Find the booking associated with id
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
+    //Check if correct user is accessing the booking
+    if (booking.user.toString() !== req.user.id) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    //Delete the booking
+    await Booking.findByIdAndDelete(bookingId);
+    res.json({ success: true, message: "Booking deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
 

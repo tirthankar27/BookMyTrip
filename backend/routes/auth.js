@@ -8,7 +8,9 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 //Get webtoken
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
 //Fetch fetch user
 const fetchUser = require("../middleware/fetchUser");
 
@@ -17,6 +19,7 @@ router.post(
   "/createUser",
   [
     //Add validation for fields
+    body("username", "Username is required").notEmpty(),
     body("email", "Enter a valid email").isEmail(),
     body("password", "Password must be 8 characters long").isLength({ min: 8 }),
   ],
@@ -47,11 +50,12 @@ router.post(
           id: user.id,
         },
       };
-      const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      res.json({ authToken });
+      // const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      // res.json({ authToken });
     } catch (err) {
+      console.log(__dirname);
       console.error(err);
-      res.status(500).send("Some error occured");
+      res.status(500).json({ error: "Some error occured" });
     }
   }
 );
@@ -92,8 +96,8 @@ router.post(
           id: user.id,
         },
       };
-      const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      res.json({ authToken });
+      // const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      // res.json({ authToken });
     } catch (err) {
       console.error(err);
       res.status(500).send("Some internal server error occured");
