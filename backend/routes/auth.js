@@ -9,6 +9,8 @@ const bcrypt = require("bcryptjs");
 //Get webtoken
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+//Fetch fetch user
+const fetchUser = require("../middleware/fetchUser");
 
 //Create a user using: POST "/api/auth/createUser"
 router.post(
@@ -99,4 +101,19 @@ router.post(
   }
 );
 
+//Get user details '/api/auth/getuser'
+//Use middleware fetchUser which will get the user details and then run the async function
+router.post("/getuser", fetchUser, async (req, res) => {
+  try {
+    //Get the id from the appended req.user
+    const userId = req.user.id;
+
+    //Now find the user by its id and fetch all the details except the password
+    const user = await User.findById(userId).select("-password");
+    res.send(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Some internal server error occured");
+  }
+});
 module.exports = router;
