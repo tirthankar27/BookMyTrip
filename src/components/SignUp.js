@@ -25,22 +25,34 @@ export default function SignUp(props) {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const response = await fetch(props.signupendpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
-    });
-    const result = await response.json();
-    if (response.ok) {
-      console.log("Signup successful:", result);
-    } else {
-      console.error("Signup failed:", result.error || result.message);
+    if (!username || !email || !password || !confirmPassword) {
+      return alert("Please fill in all fields.");
+    }
+    if (password !== confirmPassword) {
+      return alert("Passwords do not match.");
+    }
+    try {
+      const response = await fetch(props.signupendpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        localStorage.setItem("token", result.authToken);
+        console.log("Signup successful:", result);
+      } else {
+        console.error("Signup failed:", result.error || result.message);
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("Something went wrong. Please try again later.");
     }
   };
   return (
