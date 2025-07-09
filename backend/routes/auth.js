@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+require("dotenv").config({ path: __dirname + "/.env" });
 //Fetch the schema
 const User = require("../models/Userbymail");
 //Get the validator
@@ -8,8 +9,6 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 //Get webtoken
 const jwt = require("jsonwebtoken");
-const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 //Fetch fetch user
 const fetchUser = require("../middleware/fetchUser");
@@ -27,7 +26,7 @@ router.post(
   async (req, res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
+      return res.status(400).json({ success:false, errors: result.array() });
     }
     //Check whether the user with same email exists already
     try {
@@ -35,7 +34,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ error: "Sorry user with this email already exist" });
+          .json({success:false, error: "Sorry user with this email already exist" });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -47,15 +46,15 @@ router.post(
       });
       const data = {
         user: {
-          id: user.id,
+          id: user._id,
         },
       };
-      // const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      // res.json({ authToken });
+      const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      res.status(200).json({success:true, authToken });
     } catch (err) {
       console.log(__dirname);
       console.error(err);
-      res.status(500).json({ error: "Some error occured" });
+      res.status(500).json({success:false, error: "Some error occured" });
     }
   }
 );
