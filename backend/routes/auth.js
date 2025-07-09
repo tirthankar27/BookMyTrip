@@ -26,7 +26,7 @@ router.post(
   async (req, res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({ success:false, errors: result.array() });
+      return res.status(400).json({ success: false, errors: result.array() });
     }
     //Check whether the user with same email exists already
     try {
@@ -34,7 +34,10 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({success:false, error: "Sorry user with this email already exist" });
+          .json({
+            success: false,
+            error: "Sorry user with this email already exist",
+          });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -50,11 +53,11 @@ router.post(
         },
       };
       const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      res.status(200).json({success:true, authToken });
+      res.status(200).json({ success: true, authToken });
     } catch (err) {
       console.log(__dirname);
       console.error(err);
-      res.status(500).json({success:false, error: "Some error occured" });
+      res.status(500).json({ success: false, error: "Some error occured" });
     }
   }
 );
@@ -70,7 +73,7 @@ router.post(
     //Check if all the validation passess
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
+      return res.status(400).json({ success: false, errors: result.array() });
     }
     // Get the email and password entered by user
     const { email, password } = req.body;
@@ -80,14 +83,20 @@ router.post(
       if (!user) {
         return res
           .status(400)
-          .json({ error: "Please provide correct credentials" });
+          .json({
+            success: false,
+            error: "Please provide correct credentials",
+          });
       }
       //if exist then compare for the password
       const passowrdCompare = await bcrypt.compare(password, user.password);
       if (!passowrdCompare) {
         return res
           .status(400)
-          .json({ error: "Please provide correct credentials" });
+          .json({
+            success: false,
+            error: "Please provide correct credentials",
+          });
       }
       //if password and email is fine then send the user the id(id of the data stored in the )
       const data = {
@@ -95,11 +104,13 @@ router.post(
           id: user.id,
         },
       };
-      // const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      // res.json({ authToken });
+      const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      res.json({ success: true, authToken, username: user.username });
     } catch (err) {
       console.error(err);
-      res.status(500).send("Some internal server error occured");
+      res
+        .status(500)
+        .json({ success: false, error: "Some internal server error occured" });
     }
   }
 );
