@@ -16,9 +16,21 @@ import "particles.js"
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
   const signupEndpoint = process.env.REACT_APP_SIGN_UP;
+  const loginEndpoint = process.env.REACT_APP_LOGIN;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const loadingRef = useRef(null);
+  const [alert, setAlert] = useState(null);
+  const [username, setUsername] = useState(localStorage.getItem("username"));
+  const showAlert = (message,type)=>{
+    setAlert({
+      msg: message,
+      type: type
+    })
+    setTimeout(()=>{
+      setAlert(null);
+    },1500);
+  }
   return (
     <BrowserRouter basename="/BookMyTrip">
       <div
@@ -34,9 +46,10 @@ function App() {
           title="BookMyTrip"
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
+          username={username} setUsername={setUsername}
         />
         <LoadingBar color="#76B947" ref={loadingRef} />
-        <Alert darkMode={darkMode} />
+        <Alert darkMode={darkMode} alert={alert} />
         <div
           className="container my-3"
           style={{ flex: 1, paddingTop: "120px" }}
@@ -52,23 +65,23 @@ function App() {
               path="/weather"
               element={<Weather apiKey={apiKey} loadingRef={loadingRef} />}
             />
-            <Route exact path="/" element={<Home loadingRef={loadingRef} />} />
+            <Route exact path="/" element={<Home showAlert={showAlert} loadingRef={loadingRef} />} />
             <Route
               exact
               path="/searchbus"
               element={
-                <Searchbus darkMode={darkMode} loadingRef={loadingRef} />
+                <Searchbus darkMode={darkMode} loadingRef={loadingRef} showAlert={showAlert} />
               }
             />
             <Route
               exact
               path="/login"
-              element={<Login darkMode={darkMode} loadingRef={loadingRef} />}
+              element={<Login darkMode={darkMode} loginendpoint={loginEndpoint} loadingRef={loadingRef} showAlert={showAlert} setUsername={setUsername}/>}
             />
             <Route
               exact
               path="/signup"
-              element={<SignUp darkMode={darkMode} signupendpoint={signupEndpoint} loadingRef={loadingRef} />}
+              element={<SignUp darkMode={darkMode} signupendpoint={signupEndpoint} loadingRef={loadingRef} showAlert={showAlert}/>}
             />
           </Routes>
         </div>

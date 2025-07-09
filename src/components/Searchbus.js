@@ -1,14 +1,20 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Searchbus(props) {
+  const navigate = useNavigate();
   useEffect(() => {
+    if(!localStorage.getItem("token")){
+      props.showAlert("Please login to continue","warning");
+      navigate("/login");
+    }
     if (props.loadingRef?.current) {
       props.loadingRef.current.continuousStart();
       setTimeout(() => {
         props.loadingRef.current.complete();
       }, 10);
     }
-  }, [props.loadingRef]);
+  }, [navigate,props]);
   const inputClass = props.darkMode
     ? "form-control bg-secondary text-white border-light"
     : "form-control";

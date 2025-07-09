@@ -1,6 +1,9 @@
 import React from "react";
 export default function Alert(props) {
-  let alertType = props.darkMode ? "info" : "warning";
+  const capitalize = (word) => {
+    const lower = word.toLowerCase();
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  };
   return (
     <div
       style={{
@@ -12,19 +15,14 @@ export default function Alert(props) {
         position: "fixed",
       }}
     >
-      <div
-        className={`alert alert-${alertType} alert-dismissible fade show mb-3`}
-        role="alert"
-      >
-        <strong>You're not Logged In</strong> Please Login/Signup before making
-        bookings.
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
+      {props.alert && (
+        <div
+          className={`alert alert-${props.alert.type} alert-dismissible fade show mb-3`}
+          role="alert"
+        >
+          {capitalize(props.alert.msg)}
+        </div>
+      )}
     </div>
   );
 }

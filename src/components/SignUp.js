@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import passwordImg from "../assets/password.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp(props) {
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function SignUp(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  let navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -47,6 +48,8 @@ export default function SignUp(props) {
       if (result.success) {
         localStorage.setItem("token", result.authToken);
         console.log("Signup successful:", result);
+        props.showAlert("Signup successfull! Please log in.", "success");
+        navigate("/login");
       } else {
         console.error("Signup failed:", result.error || result.message);
       }
