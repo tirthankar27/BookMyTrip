@@ -48,6 +48,214 @@
   object-fit: cover;
 }
 
+/* Globe-specific adjustments */
+.vanta-globe-container {
+  overflow: hidden;
+}
+
+/* Better contrast for content */
+.content-over-globe {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .content-over-globe {
+  background: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Navbar fix */
+.navbar {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px);
+}
+/* Glass morphism effect */
+.glass-container-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-container-dark {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(5px);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(5px);
+}
+
+/* Background overlay */
+.searchbus-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(58, 123, 213, 0.1) 0%, rgba(0, 210, 255, 0.05) 100%);
+  z-index: -1;
+}
+
+/* Form inputs */
+.form-control {
+  transition: all 0.3s ease;
+  border-radius: 8px !important;
+  padding: 10px 15px;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(58, 123, 213, 0.25);
+  border-color: #3a7bd5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .glass-container {
+    width: 95% !important;
+    padding: 1.5rem !important;
+  }
+  
+  .row > .col-md-3 {
+    margin-bottom: 1rem;
+  }
+}
+/* Base Styles */
+.login-wrapper {
+  min-height: 100vh;
+  background: rgba(58, 123, 213, 0.05);
+}
+
+.glass-container {
+  background: rgba(100, 149, 237, 0.15); /* Soft cornflower blue */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  max-width: 1000px;
+  width: 100%;
+}
+
+/* Input Fields */
+.glass-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.glass-icon {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Button */
+.glass-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 0;
+  transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .glass-container {
+    max-width: 600px;
+  }
+  
+  .login-card > .row > div {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Gradient Text Effect */
+.text-gradient-blue {
+  background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glass Container Styles */
+.glass-container-dark {
+  background: rgba(15, 15, 15, 0.75) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-container-light {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Login Overlay */
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(58, 123, 213, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .login-card > .row > div {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.nav-link {
+          display: inline-block;
+        }
+        .nav-link:hover {
+          color: #3a7bd5 !important;
+        }
+        .nav-link:hover .nav-link-hover-effect {
+          width: 100% !important;
+        }
+        .nav-link.active {
+          background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
 @media (max-width: 768px) {
   .carousel-img {
     height: auto;

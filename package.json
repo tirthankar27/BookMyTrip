@@ -20,7 +20,10 @@
     "react-scripts": "5.0.1",
     "react-top-loading-bar": "^3.0.2",
     "react-tsparticles": "^2.12.2",
+    "three": "^0.132.2",
     "tsparticles": "^3.8.1",
+    "tsparticles-engine": "^2.12.0",
+    "vanta": "^0.5.24",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -1,9 +1,14 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import passwordImg from "../assets/password.png";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp(props) {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (props.loadingRef?.current) {
       props.loadingRef.current.continuousStart();
@@ -12,25 +17,25 @@ export default function SignUp(props) {
       }, 10);
     }
   }, [props.loadingRef]);
+
+  // Glass morphism classes with gradient text
   const inputClass = props.darkMode
-    ? "form-control bg-secondary text-white border-light"
-    : "form-control";
+    ? "form-control glass-dark text-white"
+    : "form-control glass-light";
+
   const containerClass = props.darkMode
-    ? "container bg-dark p-4 rounded"
-    : "container bg-light p-4 rounded";
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  let navigate = useNavigate();
+    ? "glass-container-dark"
+    : "glass-container-light";
 
   const handleSignup = async (e) => {
     e.preventDefault();
     if (!username || !email || !password || !confirmPassword) {
-      return alert("Please fill in all fields.");
+      props.showAlert("Please fill in all fields.", "warning");
+      return;
     }
     if (password !== confirmPassword) {
-      return alert("Passwords do not match.");
+      props.showAlert("Passwords do not match.", "danger");
+      return;
     }
     try {
       const response = await fetch(props.signupendpoint, {
@@ -47,109 +52,172 @@ export default function SignUp(props) {
       const result = await response.json();
       if (result.success) {
         localStorage.setItem("token", result.authToken);
-        console.log("Signup successful:", result);
-        props.showAlert("Signup successfull! Please log in.", "success");
+        props.showAlert("Signup successful! Please log in.", "success");
         navigate("/login");
       } else {
-        console.error("Signup failed:", result.error || result.message);
+        props.showAlert(result.error || result.message, "danger");
       }
     } catch (err) {
       console.error("Network error:", err);
-      alert("Something went wrong. Please try again later.");
+      props.showAlert("Something went wrong. Please try again later.", "danger");
     }
   };
+
   return (
-    <div className="row mt-5">
-      <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-        <div className="text-center">
-          <h1>Hop On to Hassle-Free Travel</h1>
-          <p className="fs-5">Sign Up and Book Your Ride in Minutes!</p>
+    <div style={{ position: "relative", minHeight: "100vh" }}>
+      {/* Background overlay */}
+      <div className="login-overlay"></div>
+
+      <div className="container d-flex justify-content-center align-items-center min-vh-100">
+        <div
+          className={`${containerClass} p-4 rounded-3 shadow-lg`}
+          style={{ width: "90%", maxWidth: "1000px" }}
+        >
+          <div className="row g-0">
+            {/* Left side - Welcome message */}
+            <div className="col-lg-6 p-4 d-flex flex-column">
+              <h1
+                className="mb-4 text-gradient-blue"
+                style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+              >
+                Join Our Community
+              </h1>
+              <p className="text-gradient-blue mb-4">
+                Sign up to start your hassle-free travel experience today!
+              </p>
+              <div className="mt-auto">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3212/3212567.png"
+                  alt="Travel illustration"
+                  className="img-fluid"
+                  style={{ maxHeight: "200px", opacity: 0.9 }}
+                />
+              </div>
+            </div>
+
+            {/* Right side - Signup form */}
+            <div className="col-lg-6 p-4">
+              <form onSubmit={handleSignup} className="h-100 d-flex flex-column">
+                <h2 className="mb-4 text-center text-gradient-blue">Sign Up</h2>
+
+                <div className="mb-3">
+                  <label className="form-label text-gradient-blue">Username</label>
+                  <div className="input-group">
+                    <span
+                      className={`input-group-text ${
+                        props.darkMode ? "bg-dark text-white" : "bg-light"
+                      }`}
+                    >
+                      @
+                    </span>
+                    <input
+                      type="text"
+                      className={inputClass}
+                      placeholder="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label text-gradient-blue">Email</label>
+                  <div className="input-group">
+                    <span
+                      className={`input-group-text ${
+                        props.darkMode ? "bg-dark text-white" : "bg-light"
+                      }`}
+                    >
+                      @
+                    </span>
+                    <input
+                      type="email"
+                      className={inputClass}
+                      placeholder="example@mail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label text-gradient-blue">Password</label>
+                  <div className="input-group">
+                    <span
+                      className={`input-group-text ${
+                        props.darkMode ? "bg-dark text-white" : "bg-light"
+                      }`}
+                    >
+                      <img src={passwordImg} alt="password" width="15" />
+                    </span>
+                    <input
+                      type="password"
+                      className={inputClass}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label text-gradient-blue">Confirm Password</label>
+                  <div className="input-group">
+                    <span
+                      className={`input-group-text ${
+                        props.darkMode ? "bg-dark text-white" : "bg-light"
+                      }`}
+                    >
+                      <img src={passwordImg} alt="password" width="15" />
+                    </span>
+                    <input
+                      type="password"
+                      className={inputClass}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn w-100 py-2 mb-2 mt-auto"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
+                    border: "none",
+                    fontWeight: "600",
+                    color: "white",
+                  }}
+                >
+                  Sign Up
+                </button>
+
+                <div className="text-center">
+                  <Link
+                    to="/login"
+                    className="text-gradient-blue"
+                    style={{ textDecoration: "none", fontWeight: "500" }}
+                  >
+                    Already have an account? Login
+                  </Link>
+                </div>
+
+                <div className="text-center mt-2">
+                  <small className="text-muted">
+                    By signing up, you agree to our <u>Terms</u> and <u>Privacy Policy</u>
+                  </small>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
-      <form
-        className={`col-12 col-md-6 ${containerClass}`}
-        onSubmit={handleSignup}
-      >
-        <h2 className="mb-4">Sign Up</h2>
-        <div className="input-group flex-nowrap mb-3">
-          <span className="input-group-text" id="addon-wrapping">
-            @
-          </span>
-          <input
-            type="text"
-            className={inputClass}
-            placeholder="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-          />
-        </div>
-        <div className="input-group flex-nowrap mb-3">
-          <span className="input-group-text" id="addon-wrapping">
-            @
-          </span>
-          <input
-            type="text"
-            className={inputClass}
-            placeholder="example@gmail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-label="Email"
-            aria-describedby="addon-wrapping"
-          />
-        </div>
-        <div className="input-group flex-nowrap mb-3">
-          <span className="input-group-text" id="addon-wrapping">
-            <img
-              src={passwordImg}
-              alt="password"
-              className="img-fluid"
-              style={{ maxHeight: "20px", maxWidth: "15px" }}
-            />
-          </span>
-          <input
-            type="password"
-            className={inputClass}
-            placeholder="password"
-            id="inputPassword"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="input-group flex-nowrap mb-3">
-          <span className="input-group-text" id="addon-wrapping">
-            <img
-              src={passwordImg}
-              alt="password"
-              className="img-fluid"
-              style={{ maxHeight: "20px", maxWidth: "15px" }}
-            />
-          </span>
-          <input
-            type="password"
-            className={inputClass}
-            placeholder="re enter password"
-            id="reinputPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-        <div className="input-group flex-nowrap mb-4">
-          <button type="submit" className="btn btn-outline-success">
-            Sign up
-          </button>
-        </div>
-        <div className="input-group flex-nowrap">
-          <Link to="/login">Already have an account?</Link>
-        </div>
-        <div className="input-group flex-nowrap">
-          <p>
-            By clicking on "Sign up" you agree to <u>Terms of Service</u> |{" "}
-            <u>Privacy Policy</u>
-          </p>
-        </div>
-      </form>
     </div>
   );
 }

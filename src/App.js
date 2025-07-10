@@ -11,7 +11,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Weather from "./components/Weather";
 import LoadingBar from "react-top-loading-bar";
-import "particles.js"
+import VantaBackground from "./components/VantaBackground";
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
@@ -22,71 +22,64 @@ function App() {
   const loadingRef = useRef(null);
   const [alert, setAlert] = useState(null);
   const [username, setUsername] = useState(localStorage.getItem("username"));
-  const showAlert = (message,type)=>{
+  
+  const showAlert = (message, type) => {
     setAlert({
       msg: message,
       type: type
     })
-    setTimeout(()=>{
+    setTimeout(() => {
       setAlert(null);
-    },1500);
+    }, 1500);
   }
+
   return (
     <BrowserRouter basename="/BookMyTrip">
-      <div
-        style={{
+      {/* VantaBackground now wraps everything */}
+      <VantaBackground darkMode={darkMode}>
+        <div style={{
+          position: "relative",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: darkMode ? "#212529" : "#f8f9fa",
-          color: darkMode ? "white" : "black",
           minHeight: "100vh",
-        }}
-      >
-        <Navbar
-          title="BookMyTrip"
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
-          username={username} setUsername={setUsername}
-        />
-        <LoadingBar color="#76B947" ref={loadingRef} />
-        <Alert darkMode={darkMode} alert={alert} />
-        <div
-          className="container my-3"
-          style={{ flex: 1, paddingTop: "120px" }}
-        >
-          <Routes>
-            <Route
-              exact
-              path="/about"
-              element={<About loadingRef={loadingRef} />}
-            />
-            <Route
-              exact
-              path="/weather"
-              element={<Weather apiKey={apiKey} loadingRef={loadingRef} />}
-            />
-            <Route exact path="/" element={<Home showAlert={showAlert} loadingRef={loadingRef} />} />
-            <Route
-              exact
-              path="/searchbus"
-              element={
-                <Searchbus darkMode={darkMode} loadingRef={loadingRef} showAlert={showAlert} />
-              }
-            />
-            <Route
-              exact
-              path="/login"
-              element={<Login darkMode={darkMode} loginendpoint={loginEndpoint} loadingRef={loadingRef} showAlert={showAlert} setUsername={setUsername}/>}
-            />
-            <Route
-              exact
-              path="/signup"
-              element={<SignUp darkMode={darkMode} signupendpoint={signupEndpoint} loadingRef={loadingRef} showAlert={showAlert}/>}
-            />
-          </Routes>
+          color: darkMode ? "white" : "black",
+        }}>
+          <Navbar
+            title="BookMyTrip"
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            username={username} 
+            setUsername={setUsername}
+          />
+          <LoadingBar color="#76B947" ref={loadingRef} />
+          <Alert darkMode={darkMode} alert={alert} />
+          
+          <div className="container my-3" style={{ flex: 1, paddingTop: "120px" }}>
+            <Routes>
+              <Route exact path="/about" element={<About loadingRef={loadingRef} />} />
+              <Route exact path="/weather" element={<Weather apiKey={apiKey} loadingRef={loadingRef} />} />
+              <Route exact path="/" element={<Home showAlert={showAlert} loadingRef={loadingRef} />} />
+              <Route
+                exact
+                path="/searchbus"
+                element={<Searchbus darkMode={darkMode} loadingRef={loadingRef} showAlert={showAlert} />}
+              />
+              <Route
+                exact
+                path="/login"
+                element={<Login darkMode={darkMode} loginendpoint={loginEndpoint} loadingRef={loadingRef} showAlert={showAlert} setUsername={setUsername}/>}
+              />
+              <Route
+                exact
+                path="/signup"
+                element={<SignUp darkMode={darkMode} signupendpoint={signupEndpoint} loadingRef={loadingRef} showAlert={showAlert}/>}
+              />
+            </Routes>
+          </div>
+          
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </VantaBackground>
     </BrowserRouter>
   );
 }

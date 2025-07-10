@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import PromoCarousel from "./PromoCarousel";
 
 export default function Home(props) {
@@ -6,8 +6,10 @@ export default function Home(props) {
     if (props.loadingRef?.current) {
       props.loadingRef.current.continuousStart();
       setTimeout(() => {
-        props.loadingRef.current.complete();
-      }, 10);
+        if (props.loadingRef?.current) {
+          props.loadingRef.current.complete();
+        }
+      }, 100);
     }
   }, [props.loadingRef]);
   return (

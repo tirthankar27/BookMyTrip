@@ -1,64 +1,97 @@
-import { Component } from "react";
-import Spinner from "./Spinner";
+import React, { useState, useEffect } from 'react';
+import './CSS/weather.css';
 
-export default class Weather extends Component {
-  constructor() {
-    super();
-    this.state = {
-      weather: null,
-    };
-  }
-  async componentDidMount() {
-    if (this.props.loadingRef?.current) {
-      this.props.loadingRef.current.continuousStart();
-    }
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        let url = `https://api.weatherapi.com/v1/current.json?key=${this.props.apiKey}&q=${lat},${lon}&aqi=no`;
-        let data = await fetch(url);
-        let weatherData = await data.json();
-        this.setState({ weather: weatherData }, ()=>{
-          if (this.props.loadingRef?.current) {
-              this.props.loadingRef.current.complete();
-            }
-        });
-      });
-    }
-  }
-  render() {
-    const { weather } = this.state;
-    if (!weather || !weather.current || !weather.location) {
-      return <div className="container d-flex justify-content-center align-items-center"><Spinner/></div>;
-    }
-    const { location, current } = weather;
-    let cardStyle = {
-      backgroundColor: current.temp_c < 25.0 ? "#e0f7fa" : "#fff3e0",
-      color: current.temp_c < 25.0 ? "#006064" : "#e65100   ",
+const Weather = (props) => {
+  const [weather, setWeather] = useState({
+    city: '',
+    temp: '',
+    humidity: '',
+    wind: ''
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      try {
+        if (props.loadingRef.current) props.loadingRef.current.continuousStart();
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(async (position) => {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+              
+              const response = await fetch(
+                `https://api.weatherapi.com/v1/current.json?key=${props.apiKey}&q=${lat},${lon}&aqi=no`
+              );
+              
+              if (!response.ok) {
+                throw new Error('City not found');
+              }
+              
+              const data = await response.json();
+              
+              setWeather({
+                city: data.location.name,
+                temp: Math.round(data.current.temp_c),
+                humidity: data.current.humidity,
+                wind: Math.round(data.current.wind_kph)
+              });
+            })
+        }
+        
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+        if (props.loadingRef.current) props.loadingRef.current.complete();
+      }
     };
 
-    return (
-      <div className="container d-flex justify-content-center align-items-center mt-5">
-        <div className="card w-25 shadow-sm" style={{ width: "18rem" }}>
-          <img
-            src={`https:${current.condition.icon}`}
-            className="card-img-top"
-            alt={current.condition.text}
-          />
-          <div className="card-body " style={cardStyle}>
-            <h5 className="card-title">{location.name}</h5>
-            <h6 className="card-subtitle mb-2 text-body-secondary">
-              {location.country}
-            </h6>
-            <h6 className="card-subtitle mb-2 text-body-secondary">
-              {current.condition.text}
-            </h6>
-            <h5 className="card-text">{current.temp_c}°C</h5>
-            <p className="card-text">Wind Speed: {current.wind_kph} kmph</p>
+    fetchWeatherData();
+  }, [props.apiKey, props.loadingRef]);
+
+  if (loading) {
+    return <div className="weather-card globe-themed">Loading weather data...</div>;
+  }
+
+  if (error) {
+    return <div className="weather-card globe-themed">Error: {error}</div>;
+  }
+
+  return (
+    <div className="weather-card globe-themed">
+      <div className="weather-header">
+        <h2>Travel Weather</h2>
+        <div className="globe-connection"></div>
+      </div>
+      
+      <div className="weather-content">
+        <div className="weather-main">
+          <div className="weather-temp">
+            {weather.temp}°C
+            <div className="weather-desc">{weather.description}</div>
           </div>
         </div>
+
+        <div className="weather-row">
+          <span className="weather-label">Location:</span>
+          <span className="weather-value">{weather.city}</span>
+        </div>
+        <div className="weather-row">
+          <span className="weather-label">Humidity:</span>
+          <span className="weather-value">{weather.humidity}%</span>
+        </div>
+        <div className="weather-row">
+          <span className="weather-label">Wind Speed:</span>
+          <span className="weather-value">{weather.wind} km/h</span>
+        </div>
       </div>
-    );
-  }
-}
+
+      <div className="weather-footer">
+        <small>Data from OpenWeatherMap</small>
+      </div>
+    </div>
+  );
+};
+
+export default Weather;
