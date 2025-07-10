@@ -14,7 +14,8 @@ app.use(express.json());
 
 //Available Routes
 app.use("/api/auth", require("./routes/auth.js"));
-app.use("/api/booking", require('./routes/booking.js'));
+app.use("/api/booking", require("./routes/booking.js"));
+app.use("/api/data", require("./routes/data.js"));
 
 app.listen(port, () => {
   console.log(__dirname + '/.env');
