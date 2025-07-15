@@ -12,6 +12,9 @@ import SignUp from "./components/SignUp";
 import Weather from "./components/Weather";
 import RegisterBus from "./components/RegisterBus";
 import RegisterPlace from "./components/RegisterPlace";
+import BusResult from "./components/BusResult";
+import Passenger from "./components/Passenger";
+import Payment from "./components/Payment";
 import LoadingBar from "react-top-loading-bar";
 import VantaBackground from "./components/VantaBackground";
 
@@ -22,7 +25,10 @@ function App() {
   const placeEndpoint = process.env.REACT_APP_PLACE;
   const placesEndpoint = process.env.REACT_APP_PLACES;
   const routeEndpoint = process.env.REACT_APP_ROUTES;
-  const busEndpoint = process.env.REACT_APP_BUSES;
+  const busEndpoint = process.env.REACT_APP_BUS;
+  const busesEndpoint = process.env.REACT_APP_BUSES;
+  const seatEndPoint = process.env.REACT_APP_SEATS;
+  const bookingEndPoint = process.env.REACT_APP_BOOKING;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const loadingRef = useRef(null);
@@ -90,6 +96,8 @@ function App() {
                     darkMode={darkMode}
                     loadingRef={loadingRef}
                     showAlert={showAlert}
+                    busesendpoint={busesEndpoint}
+                    placesendpoint={placesEndpoint}
                   />
                 }
               />
@@ -118,8 +126,35 @@ function App() {
                   />
                 }
               />
-              <Route path="/registerbus" element={<RegisterBus placesendpoint={placesEndpoint} busendpoint={busEndpoint} routeendpoint={routeEndpoint} showAlert={showAlert}/>} />
-              <Route path="/registerplace" element={<RegisterPlace placeendpoint={placeEndpoint} />} />
+              <Route
+                path="/registerbus"
+                element={
+                  <RegisterBus
+                    placesendpoint={placesEndpoint}
+                    busendpoint={busEndpoint}
+                    routeendpoint={routeEndpoint}
+                    showAlert={showAlert}
+                  />
+                }
+              />
+              <Route
+                path="/registerplace"
+                element={<RegisterPlace placeendpoint={placeEndpoint} />}
+              />
+              <Route
+                path="/searchresults"
+                element={
+                  <BusResult
+                    busesendpoint={busesEndpoint}
+                    placesendpoint={placesEndpoint}
+                  />
+                }
+              />
+              <Route
+                path="/enterdetails"
+                element={<Passenger seatsendpoint={seatEndPoint} />}
+              />
+              <Route path="/payment" element={<Payment bookingendpoint={bookingEndPoint} />} />
             </Routes>
           </div>
 
