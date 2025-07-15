@@ -27,6 +27,25 @@ router.post("/place", async (req, res) => {
   }
 });
 
+//GET place name
+
+router.get("/placename", async (req, res) => {
+  try {
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({ success: false, msg: "Missing ID" });
+    }
+    const place = await Place.findById(id);
+    if (!place) {
+      return res.status(404).json({ success: false, msg: "No place found" });
+    }
+    return res.status(200).json({ success: true, place });
+  } catch (error) {
+    console.error("Error in /placename:", error);
+    return res.status(500).json({ success: false, msg: "Server error" });
+  }
+});
+
 // GET /api/data/places Get all the available places
 router.get("/places", async (req, res) => {
   try {
@@ -239,9 +258,7 @@ router.post("/availableseats", async (req, res) => {
     const bookedSeatNumbers = bookedSeats.map((b) => b.seatnumber);
     const bus = await Bus.findById(busId).select("totalSeats");
     if (!bus) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Bus not found" });
+      return res.status(404).json({ success: false, message: "Bus not found" });
     }
     const totalSeats = bus.totalSeats || 0;
     const allSeats = Array.from({ length: totalSeats }, (_, i) => i + 1);
