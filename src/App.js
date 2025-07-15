@@ -17,6 +17,7 @@ import Passenger from "./components/Passenger";
 import Payment from "./components/Payment";
 import LoadingBar from "react-top-loading-bar";
 import VantaBackground from "./components/VantaBackground";
+import Confirmation from "./components/Confirmation";
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
@@ -29,6 +30,7 @@ function App() {
   const busesEndpoint = process.env.REACT_APP_BUSES;
   const seatEndPoint = process.env.REACT_APP_SEATS;
   const bookingEndPoint = process.env.REACT_APP_BOOKING;
+  const placeName = process.env.REACT_APP_PLACENAME;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const loadingRef = useRef(null);
@@ -130,6 +132,7 @@ function App() {
                 path="/registerbus"
                 element={
                   <RegisterBus
+                  darkMode={darkMode}
                     placesendpoint={placesEndpoint}
                     busendpoint={busEndpoint}
                     routeendpoint={routeEndpoint}
@@ -139,12 +142,13 @@ function App() {
               />
               <Route
                 path="/registerplace"
-                element={<RegisterPlace placeendpoint={placeEndpoint} />}
+                element={<RegisterPlace darkMode={darkMode} placeendpoint={placeEndpoint} />}
               />
               <Route
                 path="/searchresults"
                 element={
                   <BusResult
+                  darkMode={darkMode}
                     busesendpoint={busesEndpoint}
                     placesendpoint={placesEndpoint}
                   />
@@ -152,9 +156,10 @@ function App() {
               />
               <Route
                 path="/enterdetails"
-                element={<Passenger seatsendpoint={seatEndPoint} />}
+                element={<Passenger darkMode={darkMode} seatsendpoint={seatEndPoint} />}
               />
-              <Route path="/payment" element={<Payment bookingendpoint={bookingEndPoint} />} />
+              <Route path="/payment" element={<Payment darkMode={darkMode} bookingendpoint={bookingEndPoint} placename={placeName} />} />
+              <Route path="/confirmation" element={<Confirmation darkMode={darkMode} placename={placeName} />}/>
             </Routes>
           </div>
 
