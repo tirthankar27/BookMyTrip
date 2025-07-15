@@ -24,6 +24,16 @@ const user_bookings = new Schema({
     ref: 'Bus',
     required: true,
   },
+  source: {
+    type: String,
+    trim: true,
+    required: [true, 'Source location is required']
+  },
+  destination: {
+    type: String,
+    trim: true,
+    required: [true, 'Destination is required']
+  },
   seatnumber: {
     type: Number,
     required: true,
@@ -32,9 +42,28 @@ const user_bookings = new Schema({
     type: Number,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ['confirmed', 'cancelled', 'pending'],
+    default: 'confirmed'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-// Prevent same seat from being booked on the same bus for the same date
-user_bookings.index({ bus: 1, doj: 1, seatnumber: 1 }, { unique: true });
+user_bookings.index(
+  { bus: 1, doj: 1, seatnumber: 1 }, 
+  { 
+    unique: true,
+    partialFilterExpression: { status: { $ne: 'cancelled' } }
+  }
+);
+
+// Add query helper for active bookings
+user_bookings.query.active = function() {
+  return this.where({ status: 'confirmed' });
+};
 
 module.exports = mongoose.model("user_bookings", user_bookings);

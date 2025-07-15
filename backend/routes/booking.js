@@ -9,15 +9,17 @@ router.post(
   "/makebooking",
   fetchUser,
   [
-    body("passenger", "Passenger name is required").trim().notEmpty(),
-    body("email", "Enter a valid email").isEmail(),
-    body("doj", "Date of journey is required").notEmpty().isISO8601(),
-    body("source", "Source is required").trim().notEmpty(),
-    body("destination", "Destination is required").trim().notEmpty(),
-    body("seatnumber", "Seat number must be a positive integer").isInt({
-      min: 1,
-    }),
-    body("fare", "Fare must be a positive number").isFloat({ min: 0 }),
+    body("bus").isMongoId().withMessage("Invalid bus ID"),
+    body("passenger")
+      .trim()
+      .notEmpty()
+      .withMessage("Passenger name is required"),
+    body("email").isEmail().normalizeEmail(),
+    body("doj").isISO8601().withMessage("Invalid date format"),
+    body("seatnumber").isInt({ min: 1, max: 100 }),
+    body("fare").isFloat({ min: 0 }),
+    body("source").trim().notEmpty(),
+    body("destination").trim().notEmpty(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -25,30 +27,24 @@ router.post(
       return res.status(400).json({ success: false, errors: errors.array() });
     }
     try {
-      const { passenger, email, doj, source, destination, seatnumber, fare } =
-        req.body;
       const booking = await Booking.create({
         user: req.user.id,
-        passenger,
-        email,
-        doj,
-        source,
-        destination,
-        seatnumber,
-        fare,
+        ...req.body,
+        status: "confirmed",
       });
-      return res.status(201).json({ success: true, booking });
+
+      res.status(201).json({
+        success: true,
+        booking,
+        message: "Booking confirmed successfully",
+      });
     } catch (err) {
       if (err.code === 11000) {
         return res.status(400).json({
           success: false,
-          message: "Seat already booked for this date.",
+          message: "This seat is already booked for the selected date",
         });
       }
-      console.error(err);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal Server Error" });
     }
   }
 );
