@@ -143,6 +143,24 @@ export default function Navbar(props) {
               <li className="nav-item">
                 <Link
                   className="nav-link fs-5 position-relative"
+                  to="/ticket"
+                  style={
+                    location.pathname === "/ticket" ? gradientText : navLinkStyle
+                  }
+                >
+                  Bookings
+                  <span
+                    className="nav-link-hover-effect"
+                    style={{
+                      ...navLinkHoverEffect,
+                      width: location.pathname === "/ticket" ? "100%" : "0",
+                    }}
+                  ></span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link fs-5 position-relative"
                   to="/weather"
                   style={
                     location.pathname === "/weather"

@@ -18,6 +18,7 @@ import Payment from "./components/Payment";
 import LoadingBar from "react-top-loading-bar";
 import VantaBackground from "./components/VantaBackground";
 import Confirmation from "./components/Confirmation";
+import Tickets from "./components/Tickets";
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
@@ -30,6 +31,7 @@ function App() {
   const busesEndpoint = process.env.REACT_APP_BUSES;
   const seatEndPoint = process.env.REACT_APP_SEATS;
   const bookingEndPoint = process.env.REACT_APP_BOOKING;
+  const fetchBooking = process.env.REACT_APP_FETCH;
   const placeName = process.env.REACT_APP_PLACENAME;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
@@ -158,6 +160,7 @@ function App() {
                 path="/enterdetails"
                 element={<Passenger darkMode={darkMode} seatsendpoint={seatEndPoint} />}
               />
+              <Route path="/ticket" element={<Tickets darkMode={darkMode} fetchBooking={fetchBooking} loadingRef={loadingRef} showAlert={showAlert}/>}/>
               <Route path="/payment" element={<Payment darkMode={darkMode} bookingendpoint={bookingEndPoint} placename={placeName} />} />
               <Route path="/confirmation" element={<Confirmation darkMode={darkMode} placename={placeName} />}/>
             </Routes>
