@@ -29,6 +29,7 @@ function App() {
   const routeEndpoint = process.env.REACT_APP_ROUTES;
   const busEndpoint = process.env.REACT_APP_BUS;
   const busesEndpoint = process.env.REACT_APP_BUSES;
+  const bus=process.env.REACT_APP_FETCH_BUS;
   const seatEndPoint = process.env.REACT_APP_SEATS;
   const bookingEndPoint = process.env.REACT_APP_BOOKING;
   const fetchBooking = process.env.REACT_APP_FETCH;
@@ -160,7 +161,7 @@ function App() {
                 path="/enterdetails"
                 element={<Passenger darkMode={darkMode} seatsendpoint={seatEndPoint} />}
               />
-              <Route path="/ticket" element={<Tickets darkMode={darkMode} fetchBooking={fetchBooking} loadingRef={loadingRef} showAlert={showAlert}/>}/>
+              <Route path="/ticket" element={<Tickets darkMode={darkMode} getbus={bus} fetchBooking={fetchBooking} loadingRef={loadingRef} placename={placeName} showAlert={showAlert}/>}/>
               <Route path="/payment" element={<Payment darkMode={darkMode} bookingendpoint={bookingEndPoint} placename={placeName} />} />
               <Route path="/confirmation" element={<Confirmation darkMode={darkMode} placename={placeName} />}/>
             </Routes>
