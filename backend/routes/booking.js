@@ -54,7 +54,7 @@ router.get("/fetchbookings", fetchUser, async (req, res) => {
   try {
     //Get the booking associated with the logged in user
     const bookings = await Booking.find({ user: req.user.id });
-    res.json(bookings);
+    res.status(200).json(bookings);
   } catch (err) {
     res.status(500).send("Internal Server Error");
   }
