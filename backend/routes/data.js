@@ -28,7 +28,6 @@ router.post("/place", async (req, res) => {
 });
 
 //GET place name
-
 router.get("/placename", async (req, res) => {
   try {
     const { id } = req.query;
@@ -66,6 +65,25 @@ router.get("/routes", async (req, res) => {
     res.json({ success: true, routes });
   } catch (err) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+//GET /api/data/getbus
+router.get("/getbus", async (req, res) => {
+  try {
+    const {id} = req.query;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Bus ID is required" });
+    }
+    const bus = await Bus.findById(id);
+    if (!bus) {
+      return res.status(404).json({ success: false, msg: "No bus found" });
+    }
+    return res.status(200).json({ success: true, bus });
+  } catch (error) {
+    return res.status(500).json({ success: false, msg: "No bus found" });
   }
 });
 
