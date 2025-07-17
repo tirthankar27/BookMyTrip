@@ -9,11 +9,14 @@ import {
   FaRupeeSign,
   FaChair,
   FaMapMarkedAlt,
+  FaTimes,
 } from "react-icons/fa";
 
 export default function Tickets(props) {
   const [bookings, setBookings] = useState([]);
-  const [busData, setBusData] = useState({}); // This will store all bus information including place names
+  const [busData, setBusData] = useState({});
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState(null);
   const navigate = useNavigate();
 
   // Dark mode classes
@@ -129,9 +132,125 @@ export default function Tickets(props) {
     return new Date(dateString).toLocaleDateString("en-IN", options);
   };
 
+  const openDeleteModal = (bookingId) => {
+    setBookingToDelete(bookingId);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setBookingToDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!bookingToDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.delete(props.deletebooking, {
+        data: { bookingId: bookingToDelete },
+        headers: {
+          "auth-token": token,
+        },
+      });
+
+      if (response.data.success) {
+        props.showAlert("Booking cancelled successfully", "success");
+        setBookings((prev) => prev.filter((b) => b._id !== bookingToDelete));
+      } else {
+        props.showAlert("Failed to cancel booking", "danger");
+      }
+    } catch (err) {
+      console.error("Error cancelling booking:", err);
+      props.showAlert("Something went wrong", "danger");
+    } finally {
+      closeDeleteModal();
+    }
+  };
+
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
       <div className="tickets-overlay"></div>
+
+      {/* Simple Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="modal-backdrop"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1050,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            className="modal-content rounded-3"
+            style={{
+              width: "90%",
+              maxWidth: "500px",
+              padding: "25px",
+              backgroundColor: props.darkMode ? "#2a2a2a" : "white",
+              border: props.darkMode ? "1px solid #444" : "1px solid #ddd",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+            }}
+          >
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="mb-0" style={{ color: props.darkMode ? "white" : "#333" }}>
+                Confirm Cancellation
+              </h5>
+              <button
+                type="button"
+                className="btn p-0"
+                onClick={closeDeleteModal}
+                style={{ color: props.darkMode ? "#aaa" : "#777" }}
+              >
+                <FaTimes size={20} />
+              </button>
+            </div>
+
+            <div className="mb-4" style={{ color: props.darkMode ? "#ddd" : "#555" }}>
+              <p>Are you sure you want to cancel this ticket?</p>
+              <p className="mb-0">This action cannot be undone.</p>
+            </div>
+
+            <div className="d-flex justify-content-end gap-3">
+              <button
+                className="btn"
+                onClick={closeDeleteModal}
+                style={{
+                  backgroundColor: props.darkMode ? "#3a3a3a" : "#f0f0f0",
+                  color: props.darkMode ? "white" : "#333",
+                  border: "none",
+                  padding: "8px 20px",
+                  borderRadius: "5px",
+                }}
+              >
+                Keep Ticket
+              </button>
+              <button
+                className="btn"
+                onClick={confirmDelete}
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 20px",
+                  borderRadius: "5px",
+                }}
+              >
+                Cancel Ticket
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container py-5">
         <div className={`${containerClass} p-4 p-md-5 rounded-4 shadow-lg`}>
@@ -267,9 +386,9 @@ export default function Tickets(props) {
                           </button>
                           <button
                             className="btn btn-sm"
+                            onClick={() => openDeleteModal(booking._id)}
                             style={{
-                              background:
-                                "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
+                              backgroundColor: "#dc3545",
                               border: "none",
                               fontWeight: "500",
                               color: "white",

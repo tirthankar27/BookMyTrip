@@ -33,6 +33,7 @@ function App() {
   const seatEndPoint = process.env.REACT_APP_SEATS;
   const bookingEndPoint = process.env.REACT_APP_BOOKING;
   const fetchBooking = process.env.REACT_APP_FETCH;
+  const deleteBooking = process.env.REACT_APP_DELETE;
   const placeName = process.env.REACT_APP_PLACENAME;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
@@ -161,7 +162,7 @@ function App() {
                 path="/enterdetails"
                 element={<Passenger darkMode={darkMode} seatsendpoint={seatEndPoint} />}
               />
-              <Route path="/ticket" element={<Tickets darkMode={darkMode} getbus={bus} fetchBooking={fetchBooking} loadingRef={loadingRef} placename={placeName} showAlert={showAlert}/>}/>
+              <Route path="/ticket" element={<Tickets darkMode={darkMode} getbus={bus} fetchBooking={fetchBooking} deletebooking={deleteBooking} loadingRef={loadingRef} placename={placeName} showAlert={showAlert}/>}/>
               <Route path="/payment" element={<Payment darkMode={darkMode} bookingendpoint={bookingEndPoint} placename={placeName} />} />
               <Route path="/confirmation" element={<Confirmation darkMode={darkMode} placename={placeName} />}/>
             </Routes>
