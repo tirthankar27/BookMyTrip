@@ -39,7 +39,6 @@ export default function Tickets(props) {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       props.showAlert("Please login to continue", "warning");
-      navigate("/login");
       return;
     }
 

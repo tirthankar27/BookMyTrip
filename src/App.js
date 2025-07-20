@@ -92,7 +92,7 @@ function App() {
               <Route
                 exact
                 path="/"
-                element={<Home showAlert={showAlert} loadingRef={loadingRef} />}
+                element={<Home showAlert={showAlert} darkMode={darkMode} loadingRef={loadingRef} />}
               />
               <Route
                 exact
