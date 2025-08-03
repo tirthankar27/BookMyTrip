@@ -70,7 +70,7 @@ export default function Searchbus(props) {
 
   // Dark mode classes with glass morphism effect
   const inputClass = props.darkMode
-    ? "form-control bg-dark text-white border-light glass-dark"
+    ? "form-control text-white border-light glass-dark"
     : "form-control bg-light glass-light";
 
   const containerClass = props.darkMode
@@ -130,6 +130,7 @@ export default function Searchbus(props) {
                 className={`${inputClass}`}
                 value={journeyDate}
                 onChange={(e) => setJourneyDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
                 style={{ height: "38px" }}
               />
             </div>
@@ -147,7 +148,7 @@ export default function Searchbus(props) {
                     "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
                   border: "none",
                   fontWeight: "600",
-                  padding: "0.375rem 0.75rem", // Standard Bootstrap button padding
+                  padding: "0.375rem 0.75rem",
                 }}
               >
                 Search Buses

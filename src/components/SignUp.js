@@ -20,7 +20,7 @@ export default function SignUp(props) {
 
   // Glass morphism classes with gradient text
   const inputClass = props.darkMode
-    ? "form-control glass-dark text-white"
+    ? "form-control glass-dark"
     : "form-control glass-light";
 
   const containerClass = props.darkMode
