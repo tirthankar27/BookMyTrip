@@ -146,7 +146,7 @@ function App() {
               />
               <Route
                 path="/registerplace"
-                element={<RegisterPlace darkMode={darkMode} placeendpoint={placeEndpoint} />}
+                element={<RegisterPlace darkMode={darkMode} placeendpoint={placeEndpoint} showAlert={showAlert} />}
               />
               <Route
                 path="/searchresults"

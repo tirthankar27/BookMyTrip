@@ -38,7 +38,7 @@ const RegisterPlace = (props) => {
 
   // Dark mode classes
   const inputClass = props.darkMode
-    ? "form-control glass-dark text-white"
+    ? "form-control glass-dark"
     : "form-control glass-light";
 
   const containerClass = props.darkMode
