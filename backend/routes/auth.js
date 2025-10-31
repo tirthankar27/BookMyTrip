@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-require("dotenv").config({ path: __dirname + "/.env" });
+// require("dotenv").config({ path: __dirname + "/.env" });
 //Fetch the schema
 const User = require("../models/Userbymail");
 //Get the validator

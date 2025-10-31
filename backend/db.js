@@ -1,12 +1,31 @@
 const mongoose = require('mongoose');
-const mongoURI = 'mongodb://localhost:27017/bookmytrip?tls=false&readPreference=primary'
+
+// For MongoDB 7.0 on Mac
+const mongoURI = 'mongodb://127.0.0.1:27017/bookmytrip';
 
 async function connectToMongo() {
-    try{
-        await mongoose.connect(mongoURI);
-        console.log('MongoDB connected');
-    } catch(err){
-        console.error("Conncetion error: ",err);
+    try {
+        console.log('🔗 Connecting to MongoDB 7.0...');
+        
+        await mongoose.connect(mongoURI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 10000,
+        });
+        
+        console.log('✅ MongoDB 7.0 connected successfully to: bookmytrip');
+        
+        // Verify connection by listing collections
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        console.log('📁 Available collections:', collections.map(c => c.name));
+        
+    } catch(err) {
+        console.error("❌ MongoDB connection failed:", err.message);
+        console.log("\n🔧 Try these commands:");
+        console.log("brew services stop mongodb-community");
+        console.log("brew services start mongodb-community@7.0");
+        console.log("brew services list");
+        process.exit(1);
     }
 }
 
