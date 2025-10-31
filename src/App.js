@@ -29,7 +29,7 @@ function App() {
   const routeEndpoint = process.env.REACT_APP_ROUTES;
   const busEndpoint = process.env.REACT_APP_BUS;
   const busesEndpoint = process.env.REACT_APP_BUSES;
-  const bus=process.env.REACT_APP_FETCH_BUS;
+  const bus = process.env.REACT_APP_FETCH_BUS;
   const seatEndPoint = process.env.REACT_APP_SEATS;
   const bookingEndPoint = process.env.REACT_APP_BOOKING;
   const fetchBooking = process.env.REACT_APP_FETCH;
@@ -92,7 +92,13 @@ function App() {
               <Route
                 exact
                 path="/"
-                element={<Home showAlert={showAlert} darkMode={darkMode} loadingRef={loadingRef} />}
+                element={
+                  <Home
+                    showAlert={showAlert}
+                    darkMode={darkMode}
+                    loadingRef={loadingRef}
+                  />
+                }
               />
               <Route
                 exact
@@ -136,7 +142,7 @@ function App() {
                 path="/registerbus"
                 element={
                   <RegisterBus
-                  darkMode={darkMode}
+                    darkMode={darkMode}
                     placesendpoint={placesEndpoint}
                     busendpoint={busEndpoint}
                     routeendpoint={routeEndpoint}
@@ -146,13 +152,19 @@ function App() {
               />
               <Route
                 path="/registerplace"
-                element={<RegisterPlace darkMode={darkMode} placeendpoint={placeEndpoint} showAlert={showAlert} />}
+                element={
+                  <RegisterPlace
+                    darkMode={darkMode}
+                    placeendpoint={placeEndpoint}
+                    showAlert={showAlert}
+                  />
+                }
               />
               <Route
                 path="/searchresults"
                 element={
                   <BusResult
-                  darkMode={darkMode}
+                    darkMode={darkMode}
                     busesendpoint={busesEndpoint}
                     placesendpoint={placesEndpoint}
                   />
@@ -160,11 +172,40 @@ function App() {
               />
               <Route
                 path="/enterdetails"
-                element={<Passenger darkMode={darkMode} seatsendpoint={seatEndPoint} />}
+                element={
+                  <Passenger darkMode={darkMode} seatsendpoint={seatEndPoint} />
+                }
               />
-              <Route path="/ticket" element={<Tickets darkMode={darkMode} getbus={bus} fetchBooking={fetchBooking} deletebooking={deleteBooking} loadingRef={loadingRef} placename={placeName} showAlert={showAlert}/>}/>
-              <Route path="/payment" element={<Payment darkMode={darkMode} bookingendpoint={bookingEndPoint} placename={placeName} />} />
-              <Route path="/confirmation" element={<Confirmation darkMode={darkMode} placename={placeName} />}/>
+              <Route
+                path="/ticket"
+                element={
+                  <Tickets
+                    darkMode={darkMode}
+                    getbus={bus}
+                    fetchBooking={fetchBooking}
+                    deletebooking={deleteBooking}
+                    loadingRef={loadingRef}
+                    placename={placeName}
+                    showAlert={showAlert}
+                  />
+                }
+              />
+              <Route
+                path="/payment"
+                element={
+                  <Payment
+                    darkMode={darkMode}
+                    bookingendpoint={bookingEndPoint}
+                    placename={placeName}
+                  />
+                }
+              />
+              <Route
+                path="/confirmation"
+                element={
+                  <Confirmation darkMode={darkMode} placename={placeName} />
+                }
+              />
             </Routes>
           </div>
 
