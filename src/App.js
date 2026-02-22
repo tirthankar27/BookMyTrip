@@ -82,7 +82,7 @@ function App() {
               <Route
                 exact
                 path="/about"
-                element={<About loadingRef={loadingRef} />}
+                element={<About darkMode={darkMode} loadingRef={loadingRef} />}
               />
               <Route
                 exact

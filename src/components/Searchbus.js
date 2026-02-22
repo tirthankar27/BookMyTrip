@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { HiSwitchHorizontal } from "react-icons/hi";
 
 export default function Searchbus(props) {
   const navigate = useNavigate();
@@ -116,8 +117,8 @@ export default function Searchbus(props) {
       (p) => p.name.toLowerCase() === destination.trim().toLowerCase()
     );
 
-    if (!sourcePlace || !destinationPlace) {
-      props.showAlert("Invalid source or destination", "warning");
+    if (!sourcePlace || !destinationPlace || !journeyDate) {
+      props.showAlert("Invalid source, destination or journey date", "warning");
       return;
     }
 
@@ -163,7 +164,10 @@ export default function Searchbus(props) {
 
   const handleDateSelect = (day) => {
     const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const formattedDate = selectedDate.toISOString().split('T')[0];
+    const formattedDate =
+    selectedDate.getFullYear() + "-" +
+    String(selectedDate.getMonth() + 1).padStart(2, "0") + "-" +
+    String(selectedDate.getDate()).padStart(2, "0");
     setJourneyDate(formattedDate);
     setShowCalendar(false);
   };
@@ -189,65 +193,128 @@ export default function Searchbus(props) {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Dark mode classes with glass morphism effect
-  const inputClass = props.darkMode
-    ? "form-control text-white bg-dark border-secondary search-input"
-    : "form-control bg-light glass-light search-input";
+  // Enhanced glass morphism styles
+  const glassDarkStyle = {
+    background: "rgba(17, 25, 40, 0.85)",
+    backdropFilter: "blur(16px) saturate(180%)",
+    WebkitBackdropFilter: "blur(16px) saturate(180%)",
+    border: "1px solid rgba(255, 255, 255, 0.125)",
+    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)"
+  };
 
-  const containerClass = props.darkMode
-    ? "glass-container-dark search-container"
-    : "glass-container-light search-container";
+  const glassLightStyle = {
+    background: "rgba(255, 255, 255, 0.85)",
+    backdropFilter: "blur(16px) saturate(180%)",
+    WebkitBackdropFilter: "blur(16px) saturate(180%)",
+    border: "1px solid rgba(255, 255, 255, 0.3)",
+    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.1)"
+  };
 
-  const calendarClass = props.darkMode
-    ? "glass-container-dark custom-calendar"
-    : "glass-container-light custom-calendar";
+  const inputDarkStyle = {
+    backgroundColor: "rgba(17, 25, 40, 0.95)",
+    border: "1px solid rgba(255, 255, 255, 0.125)",
+    color: "#fff",
+    transition: "all 0.3s ease"
+  };
 
-  const suggestionClass = props.darkMode
-    ? "glass-container-dark suggestions-list"
-    : "glass-container-light suggestions-list";
-
-  const textClass = props.darkMode ? "text-white" : "text-dark";
+  const inputLightStyle = {
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    border: "1px solid rgba(0, 0, 0, 0.1)",
+    color: "#000",
+    transition: "all 0.3s ease"
+  };
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh" }}>
-      {/* Background overlay */}
-      <div className="searchbus-overlay"></div>
+    <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
+      {/* Animated Background Elements */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: "hidden",
+        pointerEvents: "none",
+        zIndex: 0
+      }}>
+        <div style={{
+          position: "absolute",
+          width: "300px",
+          height: "300px",
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+          filter: "blur(80px)",
+          opacity: props.darkMode ? 0.2 : 0.1,
+          top: "-100px",
+          right: "-50px",
+          animation: "float 20s infinite"
+        }} />
+        <div style={{
+          position: "absolute",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)",
+          filter: "blur(100px)",
+          opacity: props.darkMode ? 0.15 : 0.1,
+          bottom: "-150px",
+          left: "-100px",
+          animation: "floatReverse 25s infinite"
+        }} />
+      </div>
 
-      <div className="container d-flex flex-column align-items-center pt-5">
+      <div className="container d-flex flex-column align-items-center pt-5" style={{ position: "relative", zIndex: 1 }}>
         <h1
-          className={`${textClass} mb-4 text-center search-title`}
-          style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+          className="mb-4 text-center search-title"
+          style={{
+            color: props.darkMode ? "#fff" : "#000",
+            textShadow: props.darkMode ? "0 4px 8px rgba(0,0,0,0.5)" : "0 2px 4px rgba(0,0,0,0.1)",
+            fontSize: "3rem",
+            fontWeight: "800"
+          }}
         >
           Our Journey Begins Here <br />
-          <span className="text-primary">Find Your Perfect Bus!</span>
+          <span style={{
+            background: "linear-gradient(90deg, #3b82f6, #1d4ed8)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent"
+          }}>Find Your Perfect Bus!</span>
         </h1>
 
         <form
           onSubmit={handleSubmit}
-          className={`${containerClass} p-5 rounded-4 shadow-lg`}
-          style={{ width: "95%", maxWidth: "1000px" }}
+          style={{
+            ...(props.darkMode ? glassDarkStyle : glassLightStyle),
+            width: "95%",
+            maxWidth: "1000px",
+            padding: "2.5rem",
+            borderRadius: "32px",
+            animation: "slideUp 0.6s ease"
+          }}
         >
           <div className="row g-4 align-items-end">
             {/* From Field */}
             <div className="col-md-3 position-relative">
-              <label className={`form-label ${textClass} fw-semibold mb-2`}>
-                <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
+              <label className="form-label fw-semibold mb-2" style={{ color: props.darkMode ? "#fff" : "#000" }}>
+                <i className="bi bi-geo-alt-fill me-2" style={{ color: "#3b82f6" }}></i>
                 From
               </label>
               <div className="position-relative">
                 <input
                   ref={sourceRef}
                   type="text"
-                  className={`${inputClass} ps-4`}
+                  className="form-control"
                   placeholder="Departure city"
                   value={source}
                   onChange={handleSourceChange}
                   onFocus={() => source && setShowSourceSuggestions(true)}
-                  style={{ 
-                    height: "45px", 
-                    borderRadius: "12px",
-                    color: props.darkMode ? "#fff" : "#000",
-                    backgroundColor: props.darkMode ? "#2d2d2d" : "#fff"
+                  style={{
+                    ...(props.darkMode ? inputDarkStyle : inputLightStyle),
+                    height: "50px",
+                    borderRadius: "16px",
+                    paddingLeft: "20px",
+                    fontSize: "1rem"
                   }}
                   autoComplete="off"
                 />
@@ -261,7 +328,11 @@ export default function Searchbus(props) {
                     }}
                     style={{ border: "none", background: "transparent" }}
                   >
-                    <i className={`bi bi-x-circle-fill ${props.darkMode ? 'text-light' : 'text-secondary'}`} style={{ fontSize: "14px", opacity: "0.6" }}></i>
+                    <i className={`bi bi-x-circle-fill`} style={{ 
+                      color: props.darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.3)",
+                      fontSize: "16px",
+                      transition: "all 0.2s"
+                    }}></i>
                   </button>
                 )}
               </div>
@@ -270,26 +341,37 @@ export default function Searchbus(props) {
               {showSourceSuggestions && filteredSources.length > 0 && (
                 <div
                   ref={sourceSuggestionsRef}
-                  className={`${suggestionClass} position-absolute w-100 mt-1 rounded-3 shadow-lg`}
-                  style={{ 
-                    zIndex: 1000, 
-                    maxHeight: "200px", 
+                  style={{
+                    ...(props.darkMode ? glassDarkStyle : glassLightStyle),
+                    position: "absolute",
+                    width: "100%",
+                    marginTop: "8px",
+                    borderRadius: "16px",
+                    zIndex: 1000,
+                    maxHeight: "220px",
                     overflowY: "auto",
-                    backgroundColor: props.darkMode ? "#2d2d2d" : "#fff"
+                    animation: "slideDown 0.3s ease"
                   }}
                 >
                   {filteredSources.map((place) => (
                     <div
                       key={place._id}
-                      className={`p-2 px-3 cursor-pointer ${props.darkMode ? 'hover-bg-dark' : 'hover-bg-light'}`}
+                      className="p-3 px-3"
                       onClick={() => handleSourceSelect(place)}
-                      style={{ 
-                        cursor: "pointer", 
+                      style={{
+                        cursor: "pointer",
                         transition: "all 0.2s",
-                        color: props.darkMode ? "#fff" : "#000"
+                        color: props.darkMode ? "#fff" : "#000",
+                        borderBottom: props.darkMode ? "1px solid rgba(255,255,255,0.05)" : "1px solid rgba(0,0,0,0.05)"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
                       }}
                     >
-                      <i className="bi bi-geo-alt me-2 text-primary"></i>
+                      <i className="bi bi-geo-alt me-2" style={{ color: "#3b82f6" }}></i>
                       {place.name}
                     </div>
                   ))}
@@ -298,52 +380,57 @@ export default function Searchbus(props) {
             </div>
 
             {/* Swap Icon */}
-            <div className="col-md-1 d-flex justify-content-center">
+            <div className="col-md-1 d-flex align-items-center justify-content-center">
               <div 
-                className={`swap-icon ${props.darkMode ? 'bg-dark' : 'bg-light'}`}
+                className="swap-icon"
                 onClick={() => {
                   const temp = source;
                   setSource(destination);
                   setDestination(temp);
                 }}
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "48px",
+                  height: "48px",
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
                   marginBottom: "8px",
-                  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                  transition: "all 0.3s",
-                  backgroundColor: props.darkMode ? "#404040" : "#f8f9fa"
+                  background: props.darkMode ? "rgba(17, 25, 40, 0.95)" : "rgba(255, 255, 255, 0.95)",
+                  border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+                  transition: "all 0.3s ease"
                 }}
               >
-                <i className={`bi bi-arrow-left-right ${props.darkMode ? 'text-white' : 'text-primary'}`} style={{ fontSize: "1.2rem" }}></i>
+                <HiSwitchHorizontal 
+                  size={18}
+                  style={{ color: "#3b82f6" }} 
+                />
               </div>
             </div>
 
             {/* To Field */}
             <div className="col-md-3 position-relative">
-              <label className={`form-label ${textClass} fw-semibold mb-2`}>
-                <i className="bi bi-geo-alt-fill me-2 text-danger"></i>
+              <label className="form-label fw-semibold mb-2" style={{ color: props.darkMode ? "#fff" : "#000" }}>
+                <i className="bi bi-geo-alt-fill me-2" style={{ color: "#dc3545" }}></i>
                 To
               </label>
               <div className="position-relative">
                 <input
                   ref={destRef}
                   type="text"
-                  className={`${inputClass} ps-4`}
+                  className="form-control"
                   placeholder="Destination city"
                   value={destination}
                   onChange={handleDestinationChange}
                   onFocus={() => destination && setShowDestSuggestions(true)}
-                  style={{ 
-                    height: "45px", 
-                    borderRadius: "12px",
-                    color: props.darkMode ? "#fff" : "#000",
-                    backgroundColor: props.darkMode ? "#2d2d2d" : "#fff"
+                  style={{
+                    ...(props.darkMode ? inputDarkStyle : inputLightStyle),
+                    height: "50px",
+                    borderRadius: "16px",
+                    paddingLeft: "20px",
+                    fontSize: "1rem"
                   }}
                   autoComplete="off"
                 />
@@ -357,7 +444,11 @@ export default function Searchbus(props) {
                     }}
                     style={{ border: "none", background: "transparent" }}
                   >
-                    <i className={`bi bi-x-circle-fill ${props.darkMode ? 'text-light' : 'text-secondary'}`} style={{ fontSize: "14px", opacity: "0.6" }}></i>
+                    <i className={`bi bi-x-circle-fill`} style={{ 
+                      color: props.darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.3)",
+                      fontSize: "16px",
+                      transition: "all 0.2s"
+                    }}></i>
                   </button>
                 )}
               </div>
@@ -366,26 +457,37 @@ export default function Searchbus(props) {
               {showDestSuggestions && filteredDestinations.length > 0 && (
                 <div
                   ref={destSuggestionsRef}
-                  className={`${suggestionClass} position-absolute w-100 mt-1 rounded-3 shadow-lg`}
-                  style={{ 
-                    zIndex: 1000, 
-                    maxHeight: "200px", 
+                  style={{
+                    ...(props.darkMode ? glassDarkStyle : glassLightStyle),
+                    position: "absolute",
+                    width: "100%",
+                    marginTop: "8px",
+                    borderRadius: "16px",
+                    zIndex: 1000,
+                    maxHeight: "220px",
                     overflowY: "auto",
-                    backgroundColor: props.darkMode ? "#2d2d2d" : "#fff"
+                    animation: "slideDown 0.3s ease"
                   }}
                 >
                   {filteredDestinations.map((place) => (
                     <div
                       key={place._id}
-                      className={`p-2 px-3 cursor-pointer ${props.darkMode ? 'hover-bg-dark' : 'hover-bg-light'}`}
+                      className="p-3 px-3"
                       onClick={() => handleDestinationSelect(place)}
-                      style={{ 
-                        cursor: "pointer", 
+                      style={{
+                        cursor: "pointer",
                         transition: "all 0.2s",
-                        color: props.darkMode ? "#fff" : "#000"
+                        color: props.darkMode ? "#fff" : "#000",
+                        borderBottom: props.darkMode ? "1px solid rgba(255,255,255,0.05)" : "1px solid rgba(0,0,0,0.05)"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
                       }}
                     >
-                      <i className="bi bi-geo-alt me-2 text-danger"></i>
+                      <i className="bi bi-geo-alt me-2" style={{ color: "#dc3545" }}></i>
                       {place.name}
                     </div>
                   ))}
@@ -395,29 +497,35 @@ export default function Searchbus(props) {
 
             {/* Date Field - Custom Calendar */}
             <div className="col-md-2 position-relative">
-              <label className={`form-label ${textClass} fw-semibold mb-2`}>
-                <i className="bi bi-calendar-date me-2 text-success"></i>
+              <label className="form-label fw-semibold mb-2" style={{ color: props.darkMode ? "#fff" : "#000" }}>
+                <i className="bi bi-calendar-date me-2" style={{ color: "#28a745" }}></i>
                 Journey Date
               </label>
               <div className="position-relative">
                 <input
                   type="text"
-                  className={`${inputClass} ps-4`}
+                  className="form-control"
                   placeholder="Select date"
                   value={journeyDate ? formatDate(journeyDate) : ""}
                   onClick={() => setShowCalendar(true)}
                   readOnly
-                  style={{ 
-                    height: "45px", 
-                    borderRadius: "12px",
-                    color: props.darkMode ? "#fff" : "#000",
-                    backgroundColor: props.darkMode ? "#2d2d2d" : "#fff",
+                  style={{
+                    ...(props.darkMode ? inputDarkStyle : inputLightStyle),
+                    height: "50px",
+                    borderRadius: "16px",
+                    paddingLeft: "20px",
+                    fontSize: "1rem",
                     cursor: "pointer"
                   }}
                 />
                 <i 
-                  className={`bi bi-calendar3 position-absolute end-0 top-50 translate-middle-y me-3 ${textClass}`}
-                  style={{ fontSize: "1.1rem", opacity: "0.7", pointerEvents: "none" }}
+                  className={`bi bi-calendar3 position-absolute end-0 top-50 translate-middle-y me-3`}
+                  style={{ 
+                    fontSize: "1.2rem", 
+                    opacity: "0.7", 
+                    pointerEvents: "none",
+                    color: props.darkMode ? "#fff" : "#000"
+                  }}
                 ></i>
               </div>
               
@@ -425,32 +533,73 @@ export default function Searchbus(props) {
               {showCalendar && (
                 <div
                   ref={calendarRef}
-                  className={`${calendarClass} position-absolute w-100 mt-2 rounded-4 shadow-lg`}
-                  style={{ 
+                  style={{
+                    ...(props.darkMode ? glassDarkStyle : glassLightStyle),
+                    position: "absolute",
+                    width: "340px",
+                    marginTop: "10px",
+                    borderRadius: "24px",
                     zIndex: 1000,
-                    minWidth: "320px",
                     left: "50%",
-                    transform: "translateX(-50%)"
+                    transform: "translateX(-50%)",
+                    animation: "slideDown 0.3s ease",
+                    padding: "1rem"
                   }}
                 >
                   {/* Calendar Header */}
-                  <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+                  <div className="d-flex justify-content-between align-items-center p-2 mb-2">
                     <button
                       type="button"
                       onClick={handlePrevMonth}
-                      className="btn btn-sm btn-link text-primary"
-                      style={{ textDecoration: "none" }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#3b82f6",
+                        fontSize: "1.3rem",
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
                     >
                       <i className="bi bi-chevron-left"></i>
                     </button>
-                    <span className={`fw-semibold ${textClass}`}>
+                    <span className="fw-semibold" style={{ color: props.darkMode ? "#fff" : "#000", fontSize: "1.1rem" }}>
                       {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                     </span>
                     <button
                       type="button"
                       onClick={handleNextMonth}
-                      className="btn btn-sm btn-link text-primary"
-                      style={{ textDecoration: "none" }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#3b82f6",
+                        fontSize: "1.3rem",
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
                     >
                       <i className="bi bi-chevron-right"></i>
                     </button>
@@ -459,8 +608,8 @@ export default function Searchbus(props) {
                   {/* Day Names */}
                   <div className="row g-0 p-2 text-center">
                     {dayNames.map((day, index) => (
-                      <div key={index} className="col" style={{ fontSize: "0.8rem" }}>
-                        <span className={textClass} style={{ opacity: "0.7" }}>{day}</span>
+                      <div key={index} className="col" style={{ fontSize: "0.9rem" }}>
+                        <span style={{ color: props.darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)" }}>{day}</span>
                       </div>
                     ))}
                   </div>
@@ -487,22 +636,33 @@ export default function Searchbus(props) {
                               type="button"
                               onClick={() => !isDisabled && handleDateSelect(day)}
                               disabled={isDisabled}
-                              className={`btn w-100 p-2 rounded-3 ${
-                                isSelected 
-                                  ? "btn-primary text-white" 
-                                  : isDisabled
-                                  ? `${textClass} opacity-50`
-                                  : props.darkMode
-                                  ? "text-white hover-bg-dark"
-                                  : "text-dark hover-bg-light"
-                              }`}
                               style={{
+                                width: "100%",
+                                padding: "8px 0",
+                                borderRadius: "12px",
                                 border: "none",
-                                fontSize: "0.9rem",
+                                background: isSelected 
+                                  ? "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)"
+                                  : "transparent",
+                                color: isSelected 
+                                  ? "#fff" 
+                                  : isDisabled
+                                  ? props.darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)"
+                                  : props.darkMode ? "#fff" : "#000",
+                                fontWeight: isSelected ? "600" : "400",
+                                cursor: isDisabled ? "not-allowed" : "pointer",
                                 transition: "all 0.2s",
-                                backgroundColor: isSelected 
-                                  ? "#3a7bd5" 
-                                  : "transparent"
+                                fontSize: "0.95rem"
+                              }}
+                              onMouseEnter={(e) => {
+                                if (!isDisabled && !isSelected) {
+                                  e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isDisabled && !isSelected) {
+                                  e.currentTarget.style.background = "transparent";
+                                }
                               }}
                             >
                               {day}
@@ -533,7 +693,9 @@ export default function Searchbus(props) {
                   </div>
 
                   {/* Footer with Today button */}
-                  <div className="p-2 border-top text-center">
+                  <div className="text-center mt-3 pt-2" style={{
+                    borderTop: props.darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.1)"
+                  }}>
                     <button
                       type="button"
                       onClick={() => {
@@ -541,8 +703,22 @@ export default function Searchbus(props) {
                         setJourneyDate(today.toISOString().split('T')[0]);
                         setShowCalendar(false);
                       }}
-                      className="btn btn-sm btn-link text-primary"
-                      style={{ textDecoration: "none" }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#3b82f6",
+                        fontWeight: "600",
+                        padding: "8px 20px",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
                     >
                       Today
                     </button>
@@ -555,20 +731,21 @@ export default function Searchbus(props) {
             <div className="col-md-3">
               <button
                 type="submit"
-                className="btn btn-primary w-100 search-button"
+                className="btn w-100 search-button"
                 style={{
-                  height: "45px",
-                  background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
+                  height: "50px",
+                  background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
                   border: "none",
                   fontWeight: "600",
-                  fontSize: "1rem",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 15px rgba(58, 123, 213, 0.3)",
+                  fontSize: "1.1rem",
+                  borderRadius: "16px",
+                  boxShadow: "0 8px 20px rgba(59, 130, 246, 0.3)",
                   transition: "all 0.3s",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "8px"
+                  gap: "10px",
+                  color: "#fff"
                 }}
               >
                 <i className="bi bi-search"></i>
@@ -578,37 +755,43 @@ export default function Searchbus(props) {
           </div>
 
           {/* Quick suggestions */}
-          <div className="mt-3 d-flex gap-2 justify-content-center flex-wrap">
-            <span className={`${textClass} small`} style={{ opacity: "0.8" }}>Popular routes:</span>
+          <div className="mt-4 d-flex gap-2 justify-content-center flex-wrap">
+            <span style={{ 
+              color: props.darkMode ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.7)",
+              fontSize: "0.9rem"
+            }}>Popular routes:</span>
             <button
               type="button"
-              className="btn btn-link btn-sm p-0 text-primary text-decoration-none"
+              className="btn btn-link btn-sm p-0 text-decoration-none"
               onClick={() => {
-                setSource("New York");
-                setDestination("Boston");
+                setSource("Jalpaiguri");
+                setDestination("Gangtok");
               }}
+              style={{ color: "#3b82f6", fontSize: "0.9rem" }}
             >
-              New York → Boston
+              Jalpaiguri → Gangtok
             </button>
-            <span className={textClass}>•</span>
+            <span style={{ color: props.darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.3)" }}>•</span>
             <button
               type="button"
-              className="btn btn-link btn-sm p-0 text-primary text-decoration-none"
+              className="btn btn-link btn-sm p-0 text-decoration-none"
               onClick={() => {
-                setSource("Los Angeles");
-                setDestination("San Francisco");
+                setSource("Gangtok");
+                setDestination("Jalpaiguri");
               }}
+              style={{ color: "#3b82f6", fontSize: "0.9rem" }}
             >
-              LA → San Francisco
+              Gangtok → Jalpaiguri
             </button>
-            <span className={textClass}>•</span>
+            <span style={{ color: props.darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.3)" }}>•</span>
             <button
               type="button"
-              className="btn btn-link btn-sm p-0 text-primary text-decoration-none"
+              className="btn btn-link btn-sm p-0 text-decoration-none"
               onClick={() => {
                 setSource("Chicago");
                 setDestination("Detroit");
               }}
+              style={{ color: "#3b82f6", fontSize: "0.9rem" }}
             >
               Chicago → Detroit
             </button>
@@ -617,32 +800,27 @@ export default function Searchbus(props) {
       </div>
 
       <style jsx>{`
-        .search-input {
-          transition: all 0.3s;
-          border: 2px solid transparent;
-        }
-        .search-input:focus {
-          border-color: #3a7bd5;
-          box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.25);
+        @keyframes float {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(30px, 30px) rotate(120deg); }
+          66% { transform: translate(-20px, 20px) rotate(240deg); }
         }
         
-        .search-container {
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+        @keyframes floatReverse {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(-30px, -30px) rotate(-120deg); }
+          66% { transform: translate(20px, -20px) rotate(-240deg); }
         }
         
-        .glass-container-dark {
-          background: rgba(33, 37, 41, 0.85);
-        }
-        
-        .glass-container-light {
-          background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .custom-calendar {
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          animation: slideDown 0.3s ease;
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         
         @keyframes slideDown {
@@ -656,72 +834,46 @@ export default function Searchbus(props) {
           }
         }
         
-        .suggestions-list {
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .hover-bg-dark:hover {
-          background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .hover-bg-light:hover {
-          background: rgba(0, 0, 0, 0.05);
+        .search-title {
+          animation: slideUp 0.8s ease;
         }
         
         .swap-icon:hover {
-          transform: rotate(180deg);
+          transform: rotate(180deg) scale(1.1);
+          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
         }
         
         .search-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(58, 123, 213, 0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
         }
         
-        .search-title {
-          animation: fadeInDown 0.8s ease;
+        .search-button:active {
+          transform: translateY(-1px);
         }
         
-        @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        .form-control:focus {
+          outline: none;
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important;
         }
         
-        /* Dark mode specific input styles */
-        .bg-dark {
-          background-color: #2d2d2d !important;
+        /* Custom scrollbar for suggestions */
+        div[style*="overflowY: auto"]::-webkit-scrollbar {
+          width: 6px;
         }
         
-        .bg-dark::placeholder {
-          color: #adb5bd !important;
+        div[style*="overflowY: auto"]::-webkit-scrollbar-track {
+          background: transparent;
         }
         
-        /* Ensure text is visible in dark mode */
-        .form-control.bg-dark {
-          color: #fff !important;
-          background-color: #2d2d2d !important;
+        div[style*="overflowY: auto"]::-webkit-scrollbar-thumb {
+          background: ${props.darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"};
+          border-radius: 10px;
         }
         
-        .form-control.bg-dark:focus {
-          background-color: #363636 !important;
-          color: #fff !important;
-        }
-        
-        /* Calendar button styles */
-        .custom-calendar .btn-primary {
-          background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
-          border: none;
-        }
-        
-        .custom-calendar .btn-primary:hover {
-          transform: scale(1.05);
-          box-shadow: 0 2px 8px rgba(58, 123, 213, 0.3);
+        div[style*="overflowY: auto"]::-webkit-scrollbar-thumb:hover {
+          background: ${props.darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)"};
         }
       `}</style>
     </div>
