@@ -1,5 +1,9 @@
 import axios from "axios";
+<<<<<<< HEAD
 import React, { useEffect, useState, useRef } from "react";
+=======
+import React, { useEffect, useState } from "react";
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
 import { useNavigate } from "react-router-dom";
 
 export default function Searchbus(props) {
@@ -8,6 +12,7 @@ export default function Searchbus(props) {
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
   const [journeyDate, setJourneyDate] = useState("");
+<<<<<<< HEAD
   const [filteredSources, setFilteredSources] = useState([]);
   const [filteredDestinations, setFilteredDestinations] = useState([]);
   const [showSourceSuggestions, setShowSourceSuggestions] = useState(false);
@@ -20,6 +25,8 @@ export default function Searchbus(props) {
   const sourceSuggestionsRef = useRef(null);
   const destSuggestionsRef = useRef(null);
   const calendarRef = useRef(null);
+=======
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
 
   useEffect(() => {
     // Check for login
@@ -46,6 +53,7 @@ export default function Searchbus(props) {
       });
   }, [props.placesendpoint, props.loadingRef, props.showAlert]);
 
+<<<<<<< HEAD
   // Handle click outside to close suggestions and calendar
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -107,6 +115,8 @@ export default function Searchbus(props) {
     setShowDestSuggestions(false);
   };
 
+=======
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
   const handleSubmit = async (e) => {
     e.preventDefault();
     const sourcePlace = places.find(
@@ -141,6 +151,7 @@ export default function Searchbus(props) {
     }
   };
 
+<<<<<<< HEAD
   // Calendar functions
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -205,6 +216,16 @@ export default function Searchbus(props) {
   const suggestionClass = props.darkMode
     ? "glass-container-dark suggestions-list"
     : "glass-container-light suggestions-list";
+=======
+  // Dark mode classes with glass morphism effect
+  const inputClass = props.darkMode
+    ? "form-control text-white border-light glass-dark"
+    : "form-control bg-light glass-light";
+
+  const containerClass = props.darkMode
+    ? "glass-container-dark"
+    : "glass-container-light";
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
 
   const textClass = props.darkMode ? "text-white" : "text-dark";
 
@@ -215,7 +236,11 @@ export default function Searchbus(props) {
 
       <div className="container d-flex flex-column align-items-center pt-5">
         <h1
+<<<<<<< HEAD
           className={`${textClass} mb-4 text-center search-title`}
+=======
+          className={`${textClass} mb-4 text-center`}
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
           style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
         >
           Our Journey Begins Here <br />
@@ -224,6 +249,7 @@ export default function Searchbus(props) {
 
         <form
           onSubmit={handleSubmit}
+<<<<<<< HEAD
           className={`${containerClass} p-5 rounded-4 shadow-lg`}
           style={{ width: "95%", maxWidth: "1000px" }}
         >
@@ -572,10 +598,69 @@ export default function Searchbus(props) {
                 }}
               >
                 <i className="bi bi-search"></i>
+=======
+          className={`${containerClass} p-4 rounded-3 shadow-lg`}
+          style={{ width: "90%", maxWidth: "800px" }}
+        >
+          <div className="row g-3">
+            <div className="col-md-3">
+              <label className={`form-label ${textClass}`}>From</label>
+              <input
+                type="text"
+                className={`${inputClass}`}
+                placeholder="Departure city"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+                style={{ height: "38px" }}
+              />
+            </div>
+
+            <div className="col-md-3">
+              <label className={`form-label ${textClass}`}>To</label>
+              <input
+                type="text"
+                className={`${inputClass}`}
+                placeholder="Destination city"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                style={{ height: "38px" }}
+              />
+            </div>
+
+            <div className="col-md-3">
+              <label className={`form-label ${textClass}`}>Date</label>
+              <input
+                type="date"
+                className={`${inputClass}`}
+                value={journeyDate}
+                onChange={(e) => setJourneyDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                style={{ height: "38px" }}
+              />
+            </div>
+
+            <div className="col-md-3 d-flex flex-column">
+              <label className={`form-label ${textClass} invisible`}>
+                Search
+              </label>
+              <button
+                type="submit"
+                className="btn btn-primary w-100"
+                style={{
+                  height: "38px",
+                  background:
+                    "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
+                  border: "none",
+                  fontWeight: "600",
+                  padding: "0.375rem 0.75rem",
+                }}
+              >
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
                 Search Buses
               </button>
             </div>
           </div>
+<<<<<<< HEAD
 
           {/* Quick suggestions */}
           <div className="mt-3 d-flex gap-2 justify-content-center flex-wrap">
@@ -727,3 +812,10 @@ export default function Searchbus(props) {
     </div>
   );
 }
+=======
+        </form>
+      </div>
+    </div>
+  );
+}
+>>>>>>> 1101de0b8b108bfd90b50ab15d841cc86e27c029
