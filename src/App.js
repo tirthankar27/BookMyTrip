@@ -35,6 +35,7 @@ function App() {
   const bookingEndPoint = process.env.REACT_APP_BOOKING;
   const fetchBooking = process.env.REACT_APP_FETCH;
   const deleteBooking = process.env.REACT_APP_DELETE;
+  const cancelSeat = process.env.REACT_APP_CANCEL_SEAT;
   const placeName = process.env.REACT_APP_PLACENAME;
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
@@ -185,6 +186,7 @@ function App() {
                     getbus={bus}
                     fetchBooking={fetchBooking}
                     deletebooking={deleteBooking}
+                    deleteselectedseat={cancelSeat}
                     loadingRef={loadingRef}
                     placename={placeName}
                     showAlert={showAlert}

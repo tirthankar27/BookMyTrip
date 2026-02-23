@@ -16,6 +16,8 @@ export default function Tickets(props) {
   const [bookings, setBookings] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState(null);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const navigate = useNavigate();
 
   // Dark mode classes
@@ -83,8 +85,9 @@ export default function Tickets(props) {
     return new Date(dateString).toLocaleDateString("en-IN", options);
   };
 
-  const openDeleteModal = (bookingId) => {
-    setBookingToDelete(bookingId);
+  const openDeleteModal = (booking) => {
+    setSelectedBooking(booking);
+    setSelectedSeats([]);
     setShowDeleteModal(true);
   };
 
@@ -93,31 +96,53 @@ export default function Tickets(props) {
     setBookingToDelete(null);
   };
 
-  const confirmDelete = async () => {
-    if (!bookingToDelete) return;
+  const confirmDelete = async (cancelAll = false) => {
+    if (!selectedBooking) return;
 
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.delete(props.deletebooking, {
-        data: { bookingId: bookingToDelete },
+      const response = await axios.delete(props.deleteselectedseat, {
+        data: {
+          bookingId: selectedBooking._id,
+          seatIds: selectedSeats,
+          cancelAll,
+        },
         headers: {
           "auth-token": token,
         },
       });
 
       if (response.data.success) {
-        props.showAlert("Booking cancelled successfully", "success");
-        setBookings((prev) => prev.filter((b) => b._id !== bookingToDelete));
-      } else {
-        props.showAlert("Failed to cancel booking", "danger");
+        props.showAlert(response.data.message, "success");
+
+        if (response.data.deleted) {
+          setBookings((prev) =>
+            prev.filter((b) => b._id !== selectedBooking._id)
+          );
+        } else {
+          setBookings((prev) =>
+            prev.map((b) =>
+              b._id === selectedBooking._id
+                ? response.data.updatedBooking
+                : b
+            )
+          );
+        }
       }
     } catch (err) {
-      console.error("Error cancelling booking:", err);
       props.showAlert("Something went wrong", "danger");
     } finally {
       closeDeleteModal();
     }
+  };
+
+  const toggleSeatSelection = (seatId) => {
+    setSelectedSeats((prev) =>
+      prev.includes(seatId)
+        ? prev.filter((id) => id !== seatId)
+        : [...prev, seatId]
+    );
   };
 
   return (
@@ -166,38 +191,48 @@ export default function Tickets(props) {
               </button>
             </div>
 
-            <div className="mb-4" style={{ color: props.darkMode ? "#ddd" : "#555" }}>
-              <p>Are you sure you want to cancel this ticket?</p>
-              <p className="mb-0">This action cannot be undone.</p>
-            </div>
+            <div className="mb-3">
+              <h6>Select Passengers to Cancel</h6>
 
-            <div className="d-flex justify-content-end gap-3">
+              {selectedBooking?.seats.map((seat) => (
+                <div key={seat._id} className="form-check mb-2">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={selectedSeats.includes(seat._id)}
+                    onChange={() => toggleSeatSelection(seat._id)}
+                  />
+                  <label className="form-check-label">
+                    {seat.passenger} — Seat {seat.seatNumber}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="d-flex justify-content-between mt-3">
               <button
-                className="btn"
-                onClick={closeDeleteModal}
-                style={{
-                  backgroundColor: props.darkMode ? "#3a3a3a" : "#f0f0f0",
-                  color: props.darkMode ? "white" : "#333",
-                  border: "none",
-                  padding: "8px 20px",
-                  borderRadius: "5px",
-                }}
+                className="btn btn-danger"
+                onClick={() => confirmDelete(true)}
               >
-                Keep Ticket
+                Cancel Entire Ticket
               </button>
-              <button
-                className="btn"
-                onClick={confirmDelete}
-                style={{
-                  backgroundColor: "#dc3545",
-                  color: "white",
-                  border: "none",
-                  padding: "8px 20px",
-                  borderRadius: "5px",
-                }}
-              >
-                Cancel Ticket
-              </button>
+
+              <div>
+                <button
+                  className="btn me-2"
+                  onClick={closeDeleteModal}
+                >
+                  Close
+                </button>
+
+                <button
+                  className="btn btn-warning"
+                  disabled={selectedSeats.length === 0}
+                  onClick={() => confirmDelete(false)}
+                >
+                  Cancel Selected
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -338,7 +373,7 @@ export default function Tickets(props) {
                           </button>
                           <button
                             className="btn btn-sm"
-                            onClick={() => openDeleteModal(booking._id)}
+                            onClick={() => openDeleteModal(booking)}
                             style={{
                               backgroundColor: "#dc3545",
                               border: "none",

@@ -100,61 +100,55 @@ router.get("/fetchbookings", fetchUser, async (req, res) => {
   }
 });
 
-//Delete specific bookings '/api/booking/deletebooking'
-router.delete("/deletebooking", fetchUser, async (req, res) => {
+// Cancel individual seat '/api/booking/cancel-seat'
+router.delete("/cancel-seat", fetchUser, async (req, res) => {
   try {
-    //Get the bookingid
-    const { bookingId } = req.body;
-    if (!bookingId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Booking ID is required" });
-    }
-    //Find the booking associated with id
-    const booking = await Booking.findById(bookingId);
+    const { bookingId, seatIds, cancelAll } = req.body;
+
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      user: req.user.id,
+    });
+
     if (!booking) {
       return res
         .status(404)
         .json({ success: false, message: "Booking not found" });
     }
-    //Check if correct user is accessing the booking
-    if (booking.user.toString() !== req.user.id) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-    //Delete the booking
-    await Booking.findByIdAndDelete(bookingId);
-    res.json({ success: true, message: "Booking deleted successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
 
-// Cancel individual seat '/api/booking/cancel-seat'
-router.delete("/cancel-seat", fetchUser, async (req, res) => {
-  try {
-    const { bookingId, seatId } = req.body;
-
-    const booking = await Booking.findOne({
-      _id: bookingId,
-      user: req.user.id
-    });
-
-    if (!booking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
+    // FULL CANCEL
+    if (cancelAll) {
+      await Booking.findByIdAndDelete(bookingId);
+      return res.json({
+        success: true,
+        message: "Booking fully cancelled",
+        deleted: true,
+      });
     }
 
-    // Remove seat
+    // PARTIAL CANCEL
+    if (!seatIds || seatIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No seats selected",
+      });
+    }
+
     booking.seats = booking.seats.filter(
-      (seat) => seat._id.toString() !== seatId
+      (seat) => !seatIds.includes(seat._id.toString())
     );
 
+    // If no seats left → delete entire booking
     if (booking.seats.length === 0) {
       await Booking.findByIdAndDelete(bookingId);
-      return res.json({ success: true, message: "Booking fully cancelled" });
+      return res.json({
+        success: true,
+        message: "All seats cancelled, booking removed",
+        deleted: true,
+      });
     }
 
-    // Recalculate total
+    // Recalculate total fare
     booking.totalFare = booking.seats.reduce(
       (sum, seat) => sum + seat.fare,
       0
@@ -162,11 +156,19 @@ router.delete("/cancel-seat", fetchUser, async (req, res) => {
 
     await booking.save();
 
-    res.json({ success: true, message: "Seat cancelled successfully" });
+    res.json({
+      success: true,
+      message: "Selected seats cancelled",
+      deleted: false,
+      updatedBooking: booking,
+    });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 });
 
