@@ -19,6 +19,7 @@ import LoadingBar from "react-top-loading-bar";
 import VantaBackground from "./components/VantaBackground";
 import Confirmation from "./components/Confirmation";
 import Tickets from "./components/Tickets";
+import TicketDetails from "./components/TicketDetails";
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
@@ -190,6 +191,7 @@ function App() {
                   />
                 }
               />
+              <Route path="/ticket-details/:id" element={<TicketDetails darkMode={darkMode} />} />
               <Route
                 path="/payment"
                 element={

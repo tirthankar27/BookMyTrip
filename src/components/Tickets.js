@@ -325,10 +325,9 @@ export default function Tickets(props) {
                         <div className="d-flex justify-content-between mt-3">
                           <button
                             className="btn btn-sm"
+                            onClick={() => navigate(`/ticket-details/${booking._id}`, { state: booking })}
                             style={{
-                              background: props.darkMode
-                                ? "#2c3e50"
-                                : "#e9ecef",
+                              background: props.darkMode ? "#2c3e50" : "#e9ecef",
                               border: "none",
                               fontWeight: "500",
                               color: props.darkMode ? "white" : "black",

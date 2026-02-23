@@ -2,6 +2,16 @@ import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiSwitchHorizontal } from "react-icons/hi";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faChevronLeft, 
+  faChevronRight, 
+  faCalendarAlt,
+  faCalendarPlus,
+  faCalendarCheck,
+  faTimes,
+  faCalendarWeek 
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function Searchbus(props) {
   const navigate = useNavigate();
@@ -544,63 +554,147 @@ export default function Searchbus(props) {
                       type="button"
                       onClick={handlePrevMonth}
                       style={{
-                        background: "transparent",
-                        border: "none",
+                        background: props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)",
+                        border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
                         color: "#3b82f6",
-                        fontSize: "1.3rem",
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
+                        fontSize: "1.1rem",
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "12px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
-                        transition: "all 0.2s"
+                        transition: "all 0.2s",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = props.darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)";
+                        e.currentTarget.style.background = "#3b82f6";
+                        e.currentTarget.style.color = "#fff";
+                        e.currentTarget.style.transform = "scale(1.05)";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                        e.currentTarget.style.color = "#3b82f6";
+                        e.currentTarget.style.transform = "scale(1)";
                       }}
                     >
-                      <i className="bi bi-chevron-left"></i>
+                      <FontAwesomeIcon icon={faChevronLeft} />
                     </button>
-                    <span className="fw-semibold" style={{ color: props.darkMode ? "#fff" : "#000", fontSize: "1.1rem" }}>
+                    
+                    <span className="fw-semibold" style={{ 
+                      color: props.darkMode ? "#fff" : "#000", 
+                      fontSize: "1.1rem",
+                      background: props.darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
+                      padding: "8px 20px",
+                      borderRadius: "20px"
+                    }}>
                       {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                     </span>
+                    
                     <button
                       type="button"
                       onClick={handleNextMonth}
                       style={{
-                        background: "transparent",
-                        border: "none",
+                        background: props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)",
+                        border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
                         color: "#3b82f6",
-                        fontSize: "1.3rem",
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
+                        fontSize: "1.1rem",
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "12px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
-                        transition: "all 0.2s"
+                        transition: "all 0.2s",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = props.darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)";
+                        e.currentTarget.style.background = "#3b82f6";
+                        e.currentTarget.style.color = "#fff";
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                        e.currentTarget.style.color = "#3b82f6";
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faChevronRight} />
+                    </button>
+                  </div>
+
+                  {/* Quick month navigation buttons */}
+                  <div className="d-flex justify-content-center gap-2 mb-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const date = new Date();
+                        setCurrentMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
+                        color: props.darkMode ? "#fff" : "#000",
+                        fontSize: "0.8rem",
+                        padding: "6px 14px",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "transparent";
                       }}
                     >
-                      <i className="bi bi-chevron-right"></i>
+                      <FontAwesomeIcon icon={faCalendarWeek} size="sm" />
+                      Current
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const date = new Date();
+                        setCurrentMonth(new Date(date.getFullYear(), date.getMonth() + 1, 1));
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
+                        color: props.darkMode ? "#fff" : "#000",
+                        fontSize: "0.8rem",
+                        padding: "6px 14px",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faCalendarPlus} size="sm" />
+                      Next
                     </button>
                   </div>
 
                   <div className="row g-0 p-2 text-center">
                     {dayNames.map((day, index) => (
                       <div key={index} className="col" style={{ fontSize: "0.9rem" }}>
-                        <span style={{ color: props.darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)" }}>{day}</span>
+                        <span style={{ 
+                          color: props.darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)",
+                          fontWeight: "600"
+                        }}>{day}</span>
                       </div>
                     ))}
                   </div>
@@ -628,7 +722,11 @@ export default function Searchbus(props) {
                                 width: "100%",
                                 padding: "8px 0",
                                 borderRadius: "12px",
-                                border: "none",
+                                border: isSelected 
+                                  ? "none"
+                                  : props.darkMode 
+                                    ? "1px solid rgba(255,255,255,0.1)" 
+                                    : "1px solid rgba(0,0,0,0.1)",
                                 background: isSelected 
                                   ? "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)"
                                   : "transparent",
@@ -640,16 +738,19 @@ export default function Searchbus(props) {
                                 fontWeight: isSelected ? "600" : "400",
                                 cursor: isDisabled ? "not-allowed" : "pointer",
                                 transition: "all 0.2s",
-                                fontSize: "0.95rem"
+                                fontSize: "0.95rem",
+                                boxShadow: isSelected ? "0 4px 10px rgba(59, 130, 246, 0.3)" : "none"
                               }}
                               onMouseEnter={(e) => {
                                 if (!isDisabled && !isSelected) {
                                   e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                                  e.currentTarget.style.transform = "scale(1.05)";
                                 }
                               }}
                               onMouseLeave={(e) => {
                                 if (!isDisabled && !isSelected) {
                                   e.currentTarget.style.background = "transparent";
+                                  e.currentTarget.style.transform = "scale(1)";
                                 }
                               }}
                             >
@@ -678,7 +779,7 @@ export default function Searchbus(props) {
                     })()}
                   </div>
 
-                  <div className="text-center mt-3 pt-2" style={{
+                  <div className="d-flex justify-content-between align-items-center mt-3 pt-2" style={{
                     borderTop: props.darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.1)"
                   }}>
                     <button
@@ -689,23 +790,58 @@ export default function Searchbus(props) {
                         setShowCalendar(false);
                       }}
                       style={{
-                        background: "transparent",
-                        border: "none",
-                        color: "#3b82f6",
+                        background: props.darkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)",
+                        border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
+                        color: "#28a745",
                         fontWeight: "600",
                         padding: "8px 20px",
                         borderRadius: "20px",
                         cursor: "pointer",
-                        transition: "all 0.2s"
+                        transition: "all 0.2s",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px"
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = props.darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)";
+                        e.currentTarget.style.background = "#28a745";
+                        e.currentTarget.style.color = "#fff";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.background = props.darkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)";
+                        e.currentTarget.style.color = "#28a745";
                       }}
                     >
+                      <FontAwesomeIcon icon={faCalendarCheck} />
                       Today
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowCalendar(false)}
+                      style={{
+                        background: props.darkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)",
+                        border: props.darkMode ? "1px solid rgba(255,255,255,0.125)" : "1px solid rgba(0,0,0,0.1)",
+                        color: "#dc3545",
+                        fontWeight: "600",
+                        padding: "8px 20px",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#dc3545";
+                        e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = props.darkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)";
+                        e.currentTarget.style.color = "#dc3545";
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faTimes} />
+                      Close
                     </button>
                   </div>
                 </div>

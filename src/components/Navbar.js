@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/logo3.png";
 import { Link, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 
 export default function Navbar(props) {
   const navClass = props.darkMode
@@ -53,6 +55,26 @@ export default function Navbar(props) {
     height: "2px",
     background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
     transition: "width 0.3s ease",
+  };
+
+  // Enhanced toggle button style
+  const toggleButtonStyle = {
+    background: props.darkMode 
+      ? "linear-gradient(135deg, #2c3e50 0%, #3498db 100%)"
+      : "linear-gradient(135deg, #f39c12 0%, #f1c40f 100%)",
+    border: "none",
+    borderRadius: "50px",
+    padding: "8px 20px",
+    color: "white",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    boxShadow: props.darkMode 
+      ? "0 4px 15px rgba(52, 152, 219, 0.3)"
+      : "0 4px 15px rgba(243, 156, 18, 0.3)",
   };
 
   return (
@@ -195,14 +217,16 @@ export default function Navbar(props) {
                       border: "none",
                       fontWeight: "600",
                       color: "white",
-                      transition: "transform 0.2s ease",
+                      transition: "all 0.3s ease",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.transform = "scale(1.05)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.transform = "scale(1)")
-                    }
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.05)";
+                      e.currentTarget.style.boxShadow = "0 5px 15px rgba(255, 65, 108, 0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
                   >
                     Logout
                   </button>
@@ -221,50 +245,36 @@ export default function Navbar(props) {
                     to="/signup"
                     style={{
                       ...gradientButton,
-                      transition: "transform 0.2s ease",
+                      transition: "all 0.3s ease",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.transform = "scale(1.05)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.transform = "scale(1)")
-                    }
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.05)";
+                      e.currentTarget.style.boxShadow = "0 5px 15px rgba(58, 123, 213, 0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
                   >
                     Sign Up
                   </Link>
                 </>
               )}
-              <button
-                className="btn py-2 px-3"
-                onClick={props.toggleDarkMode}
-                style={
-                  props.darkMode
-                    ? {
-                        background:
-                          "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-                        border: "none",
-                        fontWeight: "600",
-                        color: "#333",
-                        transition: "transform 0.2s ease",
-                      }
-                    : {
-                        background:
-                          "linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%)",
-                        border: "none",
-                        fontWeight: "600",
-                        color: "white",
-                        transition: "transform 0.2s ease",
-                      }
-                }
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.05)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
-              >
-                {props.darkMode ? "Light Mode" : "Dark Mode"}
-              </button>
+              
+              {/* Enhanced Dark Mode Toggle with Icons */}
+              <div className="d-flex align-items-center">
+                <label className="theme-toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={props.darkMode}
+                    onChange={props.toggleDarkMode}
+                  />
+                  <span className={`theme-slider ${props.darkMode ? '' : 'light'}`}>
+                    <FontAwesomeIcon icon={faMoon} className="theme-icon" />
+                    <FontAwesomeIcon icon={faSun} className="theme-icon" />
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
         </div>

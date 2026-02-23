@@ -130,4 +130,44 @@ router.delete("/deletebooking", fetchUser, async (req, res) => {
   }
 });
 
+// Cancel individual seat '/api/booking/cancel-seat'
+router.delete("/cancel-seat", fetchUser, async (req, res) => {
+  try {
+    const { bookingId, seatId } = req.body;
+
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      user: req.user.id
+    });
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    // Remove seat
+    booking.seats = booking.seats.filter(
+      (seat) => seat._id.toString() !== seatId
+    );
+
+    if (booking.seats.length === 0) {
+      await Booking.findByIdAndDelete(bookingId);
+      return res.json({ success: true, message: "Booking fully cancelled" });
+    }
+
+    // Recalculate total
+    booking.totalFare = booking.seats.reduce(
+      (sum, seat) => sum + seat.fare,
+      0
+    );
+
+    await booking.save();
+
+    res.json({ success: true, message: "Seat cancelled successfully" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
 module.exports = router;
