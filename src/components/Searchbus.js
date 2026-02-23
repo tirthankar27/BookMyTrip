@@ -23,16 +23,15 @@ export default function Searchbus(props) {
   const calendarRef = useRef(null);
 
   useEffect(() => {
-    // Check for login
     if (!localStorage.getItem("token")) {
       props.showAlert("Please login to continue", "warning");
       return;
     }
-    // Start loading animation
+    
     if (props.loadingRef?.current) {
       props.loadingRef.current.continuousStart();
     }
-    // Fetch places
+
     axios
       .get(props.placesendpoint)
       .then((res) => setPlaces(res.data.places))
@@ -47,7 +46,6 @@ export default function Searchbus(props) {
       });
   }, [props.placesendpoint, props.loadingRef, props.showAlert]);
 
-  // Handle click outside to close suggestions and calendar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sourceSuggestionsRef.current && !sourceSuggestionsRef.current.contains(event.target) && 
@@ -82,7 +80,6 @@ export default function Searchbus(props) {
     }
   };
 
-  // Filter destination suggestions
   const handleDestinationChange = (e) => {
     const value = e.target.value;
     setDestination(value);
@@ -142,14 +139,13 @@ export default function Searchbus(props) {
     }
   };
 
-  // Calendar functions
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const startingDay = firstDay.getDay();
     
     return { daysInMonth, startingDay };
   };
@@ -186,14 +182,12 @@ export default function Searchbus(props) {
 
   const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Enhanced glass morphism styles
   const glassDarkStyle = {
     background: "rgba(17, 25, 40, 0.85)",
     backdropFilter: "blur(16px) saturate(180%)",
@@ -226,7 +220,6 @@ export default function Searchbus(props) {
 
   return (
     <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
-      {/* Animated Background Elements */}
       <div style={{
         position: "absolute",
         top: 0,
@@ -546,7 +539,6 @@ export default function Searchbus(props) {
                     padding: "1rem"
                   }}
                 >
-                  {/* Calendar Header */}
                   <div className="d-flex justify-content-between align-items-center p-2 mb-2">
                     <button
                       type="button"
@@ -605,7 +597,6 @@ export default function Searchbus(props) {
                     </button>
                   </div>
 
-                  {/* Day Names */}
                   <div className="row g-0 p-2 text-center">
                     {dayNames.map((day, index) => (
                       <div key={index} className="col" style={{ fontSize: "0.9rem" }}>
@@ -614,18 +605,15 @@ export default function Searchbus(props) {
                     ))}
                   </div>
 
-                  {/* Calendar Days */}
                   <div className="p-2">
                     {(() => {
                       const { daysInMonth, startingDay } = getDaysInMonth(currentMonth);
                       const days = [];
                       
-                      // Add empty cells for days before month starts
                       for (let i = 0; i < startingDay; i++) {
                         days.push(<div key={`empty-${i}`} className="col p-1"></div>);
                       }
                       
-                      // Add actual days
                       for (let day = 1; day <= daysInMonth; day++) {
                         const isDisabled = isDateDisabled(day);
                         const isSelected = journeyDate === new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day).toISOString().split('T')[0];
@@ -671,14 +659,12 @@ export default function Searchbus(props) {
                         );
                       }
                       
-                      // Fill remaining cells to complete the grid
                       const totalCells = Math.ceil((startingDay + daysInMonth) / 7) * 7;
                       const remainingCells = totalCells - (startingDay + daysInMonth);
                       for (let i = 0; i < remainingCells; i++) {
                         days.push(<div key={`empty-end-${i}`} className="col p-1"></div>);
                       }
                       
-                      // Group days into weeks
                       const weeks = [];
                       for (let i = 0; i < days.length; i += 7) {
                         weeks.push(
@@ -692,7 +678,6 @@ export default function Searchbus(props) {
                     })()}
                   </div>
 
-                  {/* Footer with Today button */}
                   <div className="text-center mt-3 pt-2" style={{
                     borderTop: props.darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.1)"
                   }}>
@@ -788,12 +773,12 @@ export default function Searchbus(props) {
               type="button"
               className="btn btn-link btn-sm p-0 text-decoration-none"
               onClick={() => {
-                setSource("Chicago");
-                setDestination("Detroit");
+                setSource("Kolkata");
+                setDestination("Jalpaiguri");
               }}
               style={{ color: "#3b82f6", fontSize: "0.9rem" }}
             >
-              Chicago → Detroit
+              Kolkata → Jalpaiguri
             </button>
           </div>
         </form>

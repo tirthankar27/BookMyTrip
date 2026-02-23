@@ -14,7 +14,6 @@ import {
 
 export default function Tickets(props) {
   const [bookings, setBookings] = useState([]);
-  const [busData, setBusData] = useState({});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState(null);
   const navigate = useNavigate();
@@ -55,56 +54,9 @@ export default function Tickets(props) {
             "auth-token": token,
           },
         });
-        const bookingsData = response.data;
+        const bookingsData = response.data.bookings;
         setBookings(bookingsData);
 
-        // Get unique bus IDs from all bookings
-        const busIds = [...new Set(bookingsData.map((b) => b.bus))];
-
-        // Fetch complete bus data for each unique bus ID
-        const busDataMap = {};
-
-        await Promise.all(
-          busIds.map(async (busId) => {
-            try {
-              // Fetch bus details
-              const busResponse = await axios.get(props.getbus, {
-                params: { id: busId },
-              });
-
-              if (busResponse.data.success) {
-                const bus = busResponse.data.bus;
-
-                // Fetch source and destination place names
-                const [sourceResponse, destinationResponse] = await Promise.all(
-                  [
-                    axios.get(props.placename, { params: { id: bus.source } }),
-                    axios.get(props.placename, {
-                      params: { id: bus.destination },
-                    }),
-                  ]
-                );
-
-                busDataMap[busId] = {
-                  ...bus,
-                  sourceName: sourceResponse.data.place?.name || bus.source,
-                  destinationName:
-                    destinationResponse.data.place?.name || bus.destination,
-                };
-              }
-            } catch (error) {
-              console.error(`Error fetching data for bus ${busId}:`, error);
-              // Fallback to just the bus ID if API calls fail
-              busDataMap[busId] = {
-                name: "Bus",
-                sourceName: "Source",
-                destinationName: "Destination",
-              };
-            }
-          })
-        );
-
-        setBusData(busDataMap);
 
         if (props.loadingRef?.current) {
           props.loadingRef.current.complete();
@@ -291,7 +243,7 @@ export default function Tickets(props) {
           ) : (
             <div className="row gy-4">
               {bookings.map((booking, index) => {
-                const bus = busData[booking.bus] || {};
+                const bus = booking.bus || {};
                 return (
                   <div key={booking._id || index} className="col-md-6 col-lg-4">
                     <div className={`card shadow-lg border-0 ${cardClass}`}>
@@ -311,7 +263,7 @@ export default function Tickets(props) {
                           <div>
                             <small className={`${textClass}`}>Route</small>
                             <p className="mb-0">
-                              {bus.sourceName} → {bus.destinationName}
+                              {booking.source?.name} → {booking.destination?.name}
                             </p>
                           </div>
                         </div>
@@ -331,7 +283,7 @@ export default function Tickets(props) {
                               <div>
                                 <small className={`${textClass}`}>Seat</small>
                                 <p className="mb-0">
-                                  {booking.seatnumber || "N/A"}
+                                  {booking.seats?.map((s) => s.seatNumber).join(", ") || "N/A"}
                                 </p>
                               </div>
                             </div>
@@ -341,7 +293,7 @@ export default function Tickets(props) {
                               <FaRupeeSign className="me-3" />
                               <div>
                                 <small className={`${textClass}`}>Fare</small>
-                                <p className="mb-0">₹{booking.fare || "0"}</p>
+                                <p className="mb-0">₹{booking.totalFare || "0"}</p>
                               </div>
                             </div>
                           </div>
@@ -364,7 +316,9 @@ export default function Tickets(props) {
                           <FaUser className="me-3" />
                           <div>
                             <small className={`${textClass}`}>Passenger</small>
-                            <p className="mb-0">{booking.passenger || "You"}</p>
+                            <p className="mb-0">{
+                              booking.seats?.map((s) => s.passenger).join(", ") || "You"}
+                            </p>
                           </div>
                         </div>
 

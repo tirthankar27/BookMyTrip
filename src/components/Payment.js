@@ -69,33 +69,34 @@ export default function Payment(props) {
       const token = localStorage.getItem("token");
       const email = localStorage.getItem("email");
 
-      for (const p of passengers) {
-        const response = await axios.post(
-          props.bookingendpoint,
-          {
-            bus: bus._id,
+      const response = await axios.post(
+        props.bookingendpoint,
+        {
+          bus: bus._id,
+          doj: bus.doj,
+          source: bus.source,
+          destination: bus.destination,
+          email: email || "anonymous@example.com",
+          seats: passengers.map((p) => ({
+            seatNumber: p.seat,
             passenger: p.name,
-            email: email || "anonymous@example.com",
-            doj: bus.doj,
-            source: bus.source,
-            destination: bus.destination,
-            seatnumber: p.seat,
             fare: Math.round(bus.baseFare * bus.fareMultiplier),
+          })),
+        },
+        {
+          headers: {
+            "auth-token": token,
           },
-          {
-            headers: {
-              "auth-token": token,
-            },
-          }
-        );
-
-        if (!response.data.success) {
-          throw new Error("One or more bookings failed");
         }
+      );
+
+      if (!response.data.success) {
+        throw new Error("Booking failed");
       }
 
-      // Redirect on success
-      navigate("/confirmation", { state: { bus, passengers, totalFare } });
+      navigate("/confirmation", {
+        state: { bus, passengers, totalFare },
+      });
     } catch (err) {
       console.error("Booking failed:", err);
       alert("Booking failed. Please try again.");

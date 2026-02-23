@@ -14,4 +14,4 @@ const places = new Schema({
   },
 });
 
-module.exports = mongoose.model("places", places);
+module.exports = mongoose.model("Place", places);

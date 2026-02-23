@@ -10,26 +10,48 @@ router.post(
   fetchUser,
   [
     body("bus").isMongoId().withMessage("Invalid bus ID"),
-    body("passenger")
+    body("email").isEmail().normalizeEmail(),
+    body("doj").isISO8601().withMessage("Invalid date format"),
+    body("source").trim().notEmpty(),
+    body("destination").trim().notEmpty(),
+
+    body("seats")
+      .isArray({ min: 1 })
+      .withMessage("At least one seat is required"),
+
+    body("seats.*.seatNumber")
+      .isInt({ min: 1, max: 150 })
+      .withMessage("Invalid seat number"),
+
+    body("seats.*.passenger")
       .trim()
       .notEmpty()
       .withMessage("Passenger name is required"),
-    body("email").isEmail().normalizeEmail(),
-    body("doj").isISO8601().withMessage("Invalid date format"),
-    body("seatnumber").isInt({ min: 1, max: 100 }),
-    body("fare").isFloat({ min: 0 }),
-    body("source").trim().notEmpty(),
-    body("destination").trim().notEmpty(),
+
+    body("seats.*.fare")
+      .isFloat({ min: 0 })
+      .withMessage("Invalid fare"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
+
     try {
+      const { seats } = req.body;
+
+      const totalFare = seats.reduce((sum, seat) => sum + seat.fare, 0);
+
       const booking = await Booking.create({
         user: req.user.id,
-        ...req.body,
+        bus: req.body.bus,
+        doj: req.body.doj,
+        source: req.body.source,
+        destination: req.body.destination,
+        email: req.body.email,
+        seats: seats,
+        totalFare: totalFare,
         status: "confirmed",
       });
 
@@ -38,13 +60,18 @@ router.post(
         booking,
         message: "Booking confirmed successfully",
       });
+
     } catch (err) {
+      console.error(err);
+
       if (err.code === 11000) {
         return res.status(400).json({
           success: false,
-          message: "This seat is already booked for the selected date",
+          message: "One or more seats are already booked for this date",
         });
       }
+
+      res.status(500).send("Internal Server Error");
     }
   }
 );
@@ -52,11 +79,24 @@ router.post(
 //Fetch all bookings '/api/booking/fetchbookings'
 router.get("/fetchbookings", fetchUser, async (req, res) => {
   try {
-    //Get the booking associated with the logged in user
-    const bookings = await Booking.find({ user: req.user.id });
-    res.status(200).json(bookings);
+    const bookings = await Booking.find({ user: req.user.id })
+      .populate("source", "name")
+      .populate("destination", "name")
+      .populate("bus", "name departureTime arrivalTime")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      bookings
+    });
+
   } catch (err) {
-    res.status(500).send("Internal Server Error");
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
   }
 });
 

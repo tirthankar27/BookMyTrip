@@ -103,4 +103,4 @@ buses.virtual('calculatedFare').get(function() {
   return Math.round(this.baseFare * this.fareMultiplier);
 });
 
-module.exports = mongoose.model("Buses", buses);
+module.exports = mongoose.model("Bus", buses);
