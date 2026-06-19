@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // For MongoDB 7.0 on Mac
-const mongoURI = process.env.MONGO_URI;
+const mongoURI = 'mongodb://127.0.0.1:27017/bookmytrip';
 
 async function connectToMongo() {
     try {
