@@ -54,7 +54,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter basename="/BookMyTrip">
+    <BrowserRouter basename="/">
       {/* VantaBackground now wraps everything */}
       <VantaBackground darkMode={darkMode}>
         <div
