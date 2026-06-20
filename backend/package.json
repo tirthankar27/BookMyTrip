@@ -4,9 +4,8 @@
   "description": "bus-booking-website-backend",
   "main": "index.js",
   "scripts": {
-    "client": "react-scripts start",
-    "server": "nodemon backend/index.js",
-    "both": "concurrently \"npm run client\" \"npm run server\""
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
