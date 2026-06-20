@@ -42,10 +42,13 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
       //Create new user with given details from json(req.body)
+      const allowedRoles = ["user", "agency"];
+      const role = allowedRoles.includes(req.body.role) ? req.body.role : "user";
       user = await User.create({
         username: req.body.username,
         email: req.body.email,
         password: secPass,
+        role,
       });
       const data = {
         user: {
@@ -105,7 +108,7 @@ router.post(
         },
       };
       const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      res.json({ success: true, authToken, username: user.username });
+      res.json({ success: true, authToken, username: user.username, role: user.role });
     } catch (err) {
       console.error(err);
       res

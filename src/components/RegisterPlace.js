@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const RegisterPlace = (props) => {
@@ -10,6 +10,18 @@ const RegisterPlace = (props) => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+
+    if (role !== "agency") {
+      props.showAlert(
+        "Only travel agencies can register places",
+        "warning"
+      );
+      navigate("/");
+    }
+  }, []);
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -18,14 +30,17 @@ const RegisterPlace = (props) => {
     try {
       const res = await fetch(props.placeendpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
         body: JSON.stringify(form),
       });
 
       const json = await res.json();
       
       if (json.success) {
-        props.showAlert("Place registered successfully!", "success");
+        props.showAlert("Place request submitted for admin approval!", "success");
         setForm({ name: "", code: "", state: "" });
       } else {
         props.showAlert(json.error || "Error registering place", "danger");

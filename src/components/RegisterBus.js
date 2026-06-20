@@ -26,13 +26,25 @@ export default function RegisterBus(props) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const role = localStorage.getItem("role");
+
+    if (role !== "agency") {
+      props.showAlert(
+        "Only travel agencies can register buses",
+        "warning"
+      );
+      navigate("/");
+      return;
+    }
+
     if (props.loadingRef?.current) {
       props.loadingRef.current.continuousStart();
     }
-    
+
     axios.get(props.placesendpoint)
       .then(res => {
         setPlaces(res.data.places);
+
         if (props.loadingRef?.current) {
           props.loadingRef.current.complete();
         }
@@ -40,6 +52,7 @@ export default function RegisterBus(props) {
       .catch(err => {
         console.error("Error fetching places", err);
         props.showAlert("Failed to load places", "danger");
+
         if (props.loadingRef?.current) {
           props.loadingRef.current.complete();
         }
@@ -118,8 +131,16 @@ export default function RegisterBus(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(props.busendpoint, bus);
-      props.showAlert("Bus registered successfully!", "success");
+      await axios.post(
+        props.busendpoint,
+        bus,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+      props.showAlert("Bus request submitted for admin approval!", "success");
       setBus({ 
         ...bus, 
         name: "", 
