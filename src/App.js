@@ -42,6 +42,7 @@ function App() {
   const loadingRef = useRef(null);
   const [alert, setAlert] = useState(null);
   const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [role, setRole] = useState(localStorage.getItem("role"));
 
   const showAlert = (message, type) => {
     setAlert({
@@ -72,6 +73,8 @@ function App() {
             toggleDarkMode={toggleDarkMode}
             username={username}
             setUsername={setUsername}
+            role={role}
+            setRole={setRole}
           />
           <LoadingBar color="#76B947" ref={loadingRef} />
           <Alert darkMode={darkMode} alert={alert} />
@@ -125,6 +128,7 @@ function App() {
                     loadingRef={loadingRef}
                     showAlert={showAlert}
                     setUsername={setUsername}
+                    setRole={setRole}
                   />
                 }
               />

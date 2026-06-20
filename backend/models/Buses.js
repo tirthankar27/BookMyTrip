@@ -86,6 +86,16 @@ const buses = new Schema({
     type: Date,
     default: Date.now
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user_from_emails",
+  },
+
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  },
   updatedAt: {
     type: Date,
     default: Date.now

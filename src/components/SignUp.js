@@ -7,6 +7,8 @@ export default function SignUp(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("user");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export default function SignUp(props) {
           username,
           email,
           password,
+          role,
         }),
       });
       const result = await response.json();
@@ -83,7 +86,9 @@ export default function SignUp(props) {
                 Join Our Community
               </h1>
               <p className="text-gradient-blue mb-4">
-                Sign up to start your hassle-free travel experience today!
+                {role === "agency"
+                  ? "Register your travel agency and submit buses and routes for approval."
+                  : "Sign up to start your hassle-free travel experience today!"}
               </p>
               <div className="mt-auto">
                 <img
@@ -141,7 +146,20 @@ export default function SignUp(props) {
                     />
                   </div>
                 </div>
+                <div className="mb-3">
+                  <label className="form-label text-gradient-blue">
+                    Register As
+                  </label>
 
+                  <select
+                    className={inputClass}
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <option value="user">Traveller</option>
+                    <option value="agency">Travel Agency</option>
+                  </select>
+                </div>
                 <div className="mb-3">
                   <label className="form-label text-gradient-blue">Password</label>
                   <div className="input-group">

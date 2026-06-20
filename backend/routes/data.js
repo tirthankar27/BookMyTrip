@@ -4,10 +4,13 @@ const Place = require("../models/Places");
 const Route = require("../models/Routes");
 const Bus = require("../models/Buses");
 const Booking = require("../models/Userbookings");
+const fetchUser = require("../middleware/fetchUser");
+const adminOnly = require("../middleware/admin");
+const agencyOnly = require("../middleware/agency");
 const { body, validationResult } = require("express-validator");
 
 // POST /api/data/place Store the place name details
-router.post("/place", async (req, res) => {
+router.post("/place", fetchUser, agencyOnly, async (req, res) => {
   try {
     const { name, code, state } = req.body;
 
@@ -17,10 +20,10 @@ router.post("/place", async (req, res) => {
         .json({ success: false, message: "Name is required" });
     }
 
-    const place = new Place({ name, code, state });
+    const place = new Place({ name, code, state, createdBy: req.user.id, status: "pending" });
     await place.save();
 
-    res.json({ success: true, place });
+    res.json({ success: true, message:"Place request submitted for approval" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -48,7 +51,7 @@ router.get("/placename", async (req, res) => {
 // GET /api/data/places Get all the available places
 router.get("/places", async (req, res) => {
   try {
-    const places = await Place.find();
+    const places = await Place.find({status: "approved"});
     res.json({ success: true, places });
   } catch (err) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -88,7 +91,7 @@ router.get("/getbus", async (req, res) => {
 });
 
 // POST /api/data/bus (Dynamic Route Creation)
-router.post("/bus", async (req, res) => {
+router.post("/bus", fetchUser, agencyOnly, async (req, res) => {
   try {
     const {
       name,
@@ -187,13 +190,15 @@ router.post("/bus", async (req, res) => {
       availableSeats,
       fareMultiplier,
       busType,
+      createdBy: req.user.id,
+      status:"pending"
     });
 
     await bus.save();
 
     res.status(201).json({
       success: true,
-      message: "Bus registered successfully",
+      message:"Bus registration request submitted",
       bus: {
         ...bus.toObject(),
         calculatedFare: Math.round(baseFare * fareMultiplier),
@@ -241,6 +246,7 @@ router.get("/buses", async (req, res) => {
     const buses = await Bus.find({
       source: source,
       destination: destination,
+      status: "approved"
     });
     if (buses.length === 0) {
       return res
@@ -289,5 +295,151 @@ router.post("/availableseats", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
+// GET /api/data//admin/pending-places Pending places
+router.get(
+  "/admin/pending-places",
+  fetchUser,
+  adminOnly,
+  async (req,res)=>{
+      const places = await Place.find({
+          status:"pending"
+      });
+
+      res.json(places);
+  }
+);
+
+//PUT /api/data/admin/approve-place/:id Approve place
+router.put(
+  "/admin/approve-place/:id",
+  fetchUser,
+  adminOnly,
+  async (req,res)=>{
+      await Place.findByIdAndUpdate(
+          req.params.id,
+          {status:"approved"}
+      );
+
+      res.json({
+          success:true
+      });
+  }
+);
+
+//PUT /api/data/admin/reject-place/:id Reject place
+router.put(
+  "/admin/reject-place/:id",
+  fetchUser,
+  adminOnly,
+  async (req,res)=>{
+      await Place.findByIdAndUpdate(
+          req.params.id,
+          {status:"rejected"}
+      );
+
+      res.json({
+          success:true
+      });
+  }
+);
+
+//GET api/data//admin/pending-buses Pending buses
+router.get(
+  "/admin/pending-buses",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const buses = await Bus.find({
+        status: "pending",
+      })
+        .populate("source", "name")
+        .populate("destination", "name")
+        .populate("createdBy", "username email");
+
+      res.json({
+        success: true,
+        count: buses.length,
+        buses,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  }
+);
+
+//PUT /api/data//admin/approve-bus/:id Approve bus
+router.put(
+  "/admin/approve-bus/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const bus = await Bus.findById(req.params.id);
+
+      if (!bus) {
+        return res.status(404).json({
+          success: false,
+          message: "Bus request not found",
+        });
+      }
+
+      bus.status = "approved";
+
+      await bus.save();
+
+      res.json({
+        success: true,
+        message: "Bus approved successfully",
+        bus,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  }
+);
+
+//PUT /api/data//admin/reject-bus/:id Reject bus
+router.put(
+  "/admin/reject-bus/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const bus = await Bus.findById(req.params.id);
+
+      if (!bus) {
+        return res.status(404).json({
+          success: false,
+          message: "Bus request not found",
+        });
+      }
+
+      bus.status = "rejected";
+
+      await bus.save();
+
+      res.json({
+        success: true,
+        message: "Bus rejected",
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  }
+);
 
 module.exports = router;

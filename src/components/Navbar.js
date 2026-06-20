@@ -10,11 +10,20 @@ export default function Navbar(props) {
     ? "navbar navbar-expand-lg glass-container-dark"
     : "navbar navbar-expand-lg glass-container-light";
   const location = useLocation();
+  const role = props.role;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("role");
+    localStorage.removeItem("email");
+
     props.setUsername(null);
+
+    if (props.setRole) {
+      props.setRole(null);
+    }
+
     window.location.href = "/BookMyTrip/login";
   };
 
@@ -200,6 +209,37 @@ export default function Navbar(props) {
                   ></span>
                 </Link>
               </li>
+              {role === "agency" && (
+                <>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link fs-5 position-relative"
+                      to="/registerplace"
+                      style={
+                        location.pathname === "/registerplace"
+                          ? gradientText
+                          : navLinkStyle
+                      }
+                    >
+                      Register Place
+                    </Link>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link fs-5 position-relative"
+                      to="/registerbus"
+                      style={
+                        location.pathname === "/registerbus"
+                          ? gradientText
+                          : navLinkStyle
+                      }
+                    >
+                      Register Bus
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
 
             <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
@@ -207,6 +247,7 @@ export default function Navbar(props) {
                 <>
                   <span className="nav-link fs-5" style={gradientText}>
                     Welcome, {props.username}
+                    {role === "agency" && " (Agency)"}
                   </span>
                   <button
                     className="btn py-2 px-3"
@@ -287,6 +328,7 @@ Navbar.propTypes = {
   title: PropTypes.string.isRequired,
   username: PropTypes.string,
   setUsername: PropTypes.func,
+  setRole: PropTypes.func,
   darkMode: PropTypes.bool.isRequired,
   toggleDarkMode: PropTypes.func.isRequired,
 };

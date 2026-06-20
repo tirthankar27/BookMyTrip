@@ -15,6 +15,11 @@ const user_mail_Schema = new Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ["user", "agency", "admin"],
+    default: "user",
+  },
   bookings: {
     type: Number,
     default: 0,

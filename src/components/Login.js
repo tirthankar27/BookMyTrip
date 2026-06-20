@@ -47,7 +47,11 @@ export default function Login(props) {
         localStorage.setItem("token", result.authToken);
         localStorage.setItem("username", result.username);
         localStorage.setItem("email", email);
+        localStorage.setItem("role", result.role);
         props.setUsername(result.username);
+        if (props.setRole) {
+          props.setRole(result.role);
+        }
         props.showAlert("Login successful!", "success");
         navigate("/");
       } else {
