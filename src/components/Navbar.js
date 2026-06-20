@@ -24,7 +24,7 @@ export default function Navbar(props) {
       props.setRole(null);
     }
 
-    window.location.href = "/BookMyTrip/login";
+    window.location.href = "/login";
   };
 
   // Gradient text style
