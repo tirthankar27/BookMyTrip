@@ -242,7 +242,7 @@ const AdminDashboard = (props) => {
                   </p>
 
                   <button
-                    className="btn btn-success me-2"
+                    className="btn btn-primary me-2"
                     onClick={() =>
                       handleApprovePlace(
                         place._id
@@ -306,7 +306,7 @@ const AdminDashboard = (props) => {
                   </p>
 
                   <button
-                    className="btn btn-success me-2"
+                    className="btn btn-primary me-2"
                     onClick={() =>
                       handleApproveBus(
                         bus._id
