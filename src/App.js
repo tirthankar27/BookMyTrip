@@ -20,6 +20,7 @@ import VantaBackground from "./components/VantaBackground";
 import Confirmation from "./components/Confirmation";
 import Tickets from "./components/Tickets";
 import TicketDetails from "./components/TicketDetails";
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
@@ -37,11 +38,19 @@ function App() {
   const deleteBooking = process.env.REACT_APP_DELETE;
   const cancelSeat = process.env.REACT_APP_CANCEL_SEAT;
   const placeName = process.env.REACT_APP_PLACENAME;
+  const pendingPlaces = process.env.REACT_APP_PENDING_PLACES;
+  const pendingBuses = process.env.REACT_APP_PENDING_BUSES;
+  const approvePlace = process.env.REACT_APP_APPROVE_PLACE;
+  const rejectPlace = process.env.REACT_APP_REJECT_PLACE;
+  const approveBus = process.env.REACT_APP_APPROVE_BUS;
+  const rejectBus = process.env.REACT_APP_REJECT_BUS;
+
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const loadingRef = useRef(null);
   const [alert, setAlert] = useState(null);
   const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [role, setRole] = useState(localStorage.getItem("role"));
 
   const showAlert = (message, type) => {
     setAlert({
@@ -72,6 +81,8 @@ function App() {
             toggleDarkMode={toggleDarkMode}
             username={username}
             setUsername={setUsername}
+            role={role}
+            setRole={setRole}
           />
           <LoadingBar color="#76B947" ref={loadingRef} />
           <Alert darkMode={darkMode} alert={alert} />
@@ -90,6 +101,22 @@ function App() {
                 exact
                 path="/weather"
                 element={<Weather apiKey={apiKey} loadingRef={loadingRef} />}
+              />
+              <Route
+                path="/admin"
+                element={
+                  <AdminDashboard
+                    darkMode={darkMode}
+                    showAlert={showAlert}
+                    loadingRef={loadingRef}
+                    pendingPlaces={pendingPlaces}
+                    pendingBuses={pendingBuses}
+                    approvePlace={approvePlace}
+                    rejectPlace={rejectPlace}
+                    approveBus={approveBus}
+                    rejectBus={rejectBus}
+                  />
+                }
               />
               <Route
                 exact
@@ -125,6 +152,7 @@ function App() {
                     loadingRef={loadingRef}
                     showAlert={showAlert}
                     setUsername={setUsername}
+                    setRole={setRole}
                   />
                 }
               />
