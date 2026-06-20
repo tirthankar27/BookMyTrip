@@ -301,12 +301,28 @@ router.get(
   "/admin/pending-places",
   fetchUser,
   adminOnly,
-  async (req,res)=>{
+  async (req, res) => {
+    try {
       const places = await Place.find({
-          status:"pending"
-      });
+        status: "pending",
+      }).populate(
+        "createdBy",
+        "username email"
+      );
 
-      res.json(places);
+      res.json({
+        success: true,
+        count: places.length,
+        places,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
   }
 );
 
