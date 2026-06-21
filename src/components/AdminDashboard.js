@@ -6,6 +6,7 @@ const AdminDashboard = (props) => {
 
   const [places, setPlaces] = useState([]);
   const [buses, setBuses] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const AdminDashboard = (props) => {
 
       const token = localStorage.getItem("token");
 
-      const [placeRes, busRes] = await Promise.all([
+      const [placeRes, busRes, packageRes] = await Promise.all([
         fetch(props.pendingPlaces, {
           headers: {
             "auth-token": token,
@@ -40,13 +41,20 @@ const AdminDashboard = (props) => {
             "auth-token": token,
           },
         }),
+        fetch(props.pendingPackages, {
+          headers: {
+            "auth-token": token,
+          },
+        }),
       ]);
 
       const placeData = await placeRes.json();
       const busData = await busRes.json();
+      const packageData = await packageRes.json();
 
       setPlaces(placeData.places || []);
       setBuses(busData.buses || []);
+      setPackages(packageData.packages || []);
     } catch (err) {
       console.error(err);
       props.showAlert(
@@ -178,6 +186,66 @@ const AdminDashboard = (props) => {
     }
   };
 
+  const handleApprovePackage = async (id) => {
+    try {
+      const res = await fetch(
+        `${props.approvePackage}/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "auth-token":
+              localStorage.getItem("token"),
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        props.showAlert(
+          "Package approved successfully",
+          "success"
+        );
+
+        setPackages((prev) =>
+          prev.filter((p) => p._id !== id)
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRejectPackage = async (id) => {
+    try {
+      const res = await fetch(
+        `${props.rejectPackage}/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "auth-token":
+              localStorage.getItem("token"),
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        props.showAlert(
+          "Package rejected",
+          "warning"
+        );
+
+        setPackages((prev) =>
+          prev.filter((p) => p._id !== id)
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const containerClass = props.darkMode
     ? "glass-container-dark"
     : "glass-container-light";
@@ -242,7 +310,7 @@ const AdminDashboard = (props) => {
                   </p>
 
                   <button
-                    className="btn btn-success me-2"
+                    className="btn btn-primary me-2"
                     onClick={() =>
                       handleApprovePlace(
                         place._id
@@ -306,7 +374,7 @@ const AdminDashboard = (props) => {
                   </p>
 
                   <button
-                    className="btn btn-success me-2"
+                    className="btn btn-primary me-2"
                     onClick={() =>
                       handleApproveBus(
                         bus._id
@@ -322,6 +390,69 @@ const AdminDashboard = (props) => {
                       handleRejectBus(
                         bus._id
                       )
+                    }
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+
+          <hr className="my-5" />
+
+          <h3 className="mb-4">
+            Pending Package Requests
+          </h3>
+
+          {packages.length === 0 ? (
+            <p>No pending packages</p>
+          ) : (
+            packages.map((pkg) => (
+              <div
+                key={pkg._id}
+                className="card mb-3"
+              >
+                <div className="card-body">
+                  <h5>{pkg.title}</h5>
+
+                  <p>
+                    <strong>Destination:</strong>{" "}
+                    {pkg.destination?.name}
+                  </p>
+
+                  <p>
+                    <strong>Duration:</strong>{" "}
+                    {pkg.duration}
+                  </p>
+
+                  <p>
+                    <strong>Price:</strong> ₹{pkg.price}
+                  </p>
+
+                  <p>
+                    <strong>Description:</strong>{" "}
+                    {pkg.description}
+                  </p>
+
+                  <p>
+                    <strong>Agency:</strong>{" "}
+                    {pkg.createdBy?.username}
+                  </p>
+
+                  <button
+                    className="btn btn-primary me-2"
+                    onClick={() =>
+                      handleApprovePackage(pkg._id)
+                    }
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    className="btn btn-danger"
+                    onClick={() =>
+                      handleRejectPackage(pkg._id)
                     }
                   >
                     Reject

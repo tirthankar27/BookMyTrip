@@ -3,6 +3,7 @@
 const User = require("../models/Userbymail");
 
 const agencyOnly = async (req, res, next) => {
+  console.log("Agency hit");
   try {
     const user = await User.findById(req.user.id);
 

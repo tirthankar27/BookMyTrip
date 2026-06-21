@@ -21,6 +21,10 @@ import Confirmation from "./components/Confirmation";
 import Tickets from "./components/Tickets";
 import TicketDetails from "./components/TicketDetails";
 import AdminDashboard from "./components/AdminDashboard";
+import RegisterPackage from "./components/RegisterPackage";
+import Packages from "./components/Packages";
+import PackageDetails from "./components/PackageDetails";
+import AgencyPortal from "./components/AgencyPortal";
 import ChatAssistant from "./components/ChatAssistant";
 
 function App() {
@@ -45,6 +49,18 @@ function App() {
   const rejectPlace = process.env.REACT_APP_REJECT_PLACE;
   const approveBus = process.env.REACT_APP_APPROVE_BUS;
   const rejectBus = process.env.REACT_APP_REJECT_BUS;
+  const packageEndpoint = process.env.REACT_APP_PACKAGE;
+  const packagesEndpoint = process.env.REACT_APP_PACKAGES;
+  const pendingPackages = process.env.REACT_APP_PENDING_PACKAGES;
+  const approvePackage = process.env.REACT_APP_APPROVE_PACKAGE;
+  const rejectPackage = process.env.REACT_APP_REJECT_PACKAGE;
+  const packageDetailsEndpoint = process.env.REACT_APP_PACKAGE_DETAILS;
+  const hotelEndpoint = process.env.REACT_APP_HOTEL;
+  const hotelsEndpoint = process.env.REACT_APP_HOTELS;
+  const hotelDetailsEndpoint = process.env.REACT_APP_HOTEL_DETAILS;
+  const pendingHotels = process.env.REACT_APP_PENDING_HOTELS;
+  const approveHotel = process.env.REACT_APP_APPROVE_HOTEL;
+  const rejectHotel = process.env.REACT_APP_REJECT_HOTEL;
   const aiChatEndpoint = process.env.REACT_APP_AI_CHAT;
 
   const [darkMode, setDarkMode] = useState(false);
@@ -117,6 +133,24 @@ function App() {
                     rejectPlace={rejectPlace}
                     approveBus={approveBus}
                     rejectBus={rejectBus}
+                    pendingPackages={pendingPackages}
+                    approvePackage={approvePackage}
+                    rejectPackage={rejectPackage}
+                  />
+                }
+              />
+              <Route
+                path="/agency"
+                element={
+                  <AgencyPortal
+                    darkMode={darkMode}
+                    showAlert={showAlert}
+                    placeendpoint={placeEndpoint}
+                    placesendpoint={placesEndpoint}
+                    busendpoint={busEndpoint}
+                    routeendpoint={routeEndpoint}
+                    packageEndpoint={packageEndpoint}
+                    hotelEndpoint={hotelEndpoint}
                   />
                 }
               />
@@ -193,6 +227,36 @@ function App() {
                 }
               />
               <Route
+                path="/registerpackage"
+                element={
+                  <RegisterPackage
+                    darkMode={darkMode}
+                    packageEndpoint={packageEndpoint}
+                    placesendpoint={placesEndpoint}
+                    showAlert={showAlert}
+                  />
+                }
+              />
+
+              <Route
+                path="/packages"
+                element={
+                  <Packages
+                    darkMode={darkMode}
+                    packagesEndpoint={packagesEndpoint}
+                  />
+                }
+              />
+              <Route
+                path="/package/:id"
+                element={
+                  <PackageDetails
+                    darkMode={darkMode}
+                    packageDetailsEndpoint={packageDetailsEndpoint}
+                  />
+                }
+              />
+              <Route
                 path="/searchresults"
                 element={
                   <BusResult
@@ -223,7 +287,10 @@ function App() {
                   />
                 }
               />
-              <Route path="/ticket-details/:id" element={<TicketDetails darkMode={darkMode} />} />
+              <Route
+                path="/ticket-details/:id"
+                element={<TicketDetails darkMode={darkMode} />}
+              />
               <Route
                 path="/payment"
                 element={

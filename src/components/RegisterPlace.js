@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaPaperPlane } from "react-icons/fa";
 
 const RegisterPlace = (props) => {
   const [form, setForm] = useState({
@@ -14,10 +15,7 @@ const RegisterPlace = (props) => {
     const role = localStorage.getItem("role");
 
     if (role !== "agency") {
-      props.showAlert(
-        "Only travel agencies can register places",
-        "warning"
-      );
+      props.showAlert("Only travel agencies can register places", "warning");
       navigate("/");
     }
   }, []);
@@ -38,9 +36,12 @@ const RegisterPlace = (props) => {
       });
 
       const json = await res.json();
-      
+
       if (json.success) {
-        props.showAlert("Place request submitted for admin approval!", "success");
+        props.showAlert(
+          "Place request submitted for admin approval!",
+          "success",
+        );
         setForm({ name: "", code: "", state: "" });
       } else {
         props.showAlert(json.error || "Error registering place", "danger");
@@ -61,79 +62,104 @@ const RegisterPlace = (props) => {
     : "glass-container-light";
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh" }}>
-      {/* Background overlay */}
-      <div className="register-overlay"></div>
+    <>
+      <div className="mb-4">
+        <h2
+          style={{
+            color: props.darkMode ? "#fff" : "#111827",
+            fontWeight: "700",
+            fontSize: "2rem",
+          }}
+        >
+          Register Place
+        </h2>
 
-      <div className="container d-flex justify-content-center align-items-center min-vh-100">
-        <div className={`${containerClass} p-4 p-md-5 rounded-4 shadow-lg`} style={{ width: "100%", maxWidth: "600px" }}>
-          <h2 className="text-center mb-4" style={{
-            background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent"
-          }}>
-            Register New Place
-          </h2>
+        <p
+          style={{
+            color: props.darkMode ? "rgba(255,255,255,.7)" : "#6b7280",
+            marginBottom: "20px",
+          }}
+        >
+          Add a new destination to BookMyTrip
+        </p>
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">Place Name</label>
-              <input
-                name="name"
-                className={inputClass}
-                placeholder="Enter place name"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Place Code</label>
-              <input
-                name="code"
-                className={inputClass}
-                placeholder="Enter place code"
-                value={form.code}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="form-label">State</label>
-              <input
-                name="state"
-                className={inputClass}
-                placeholder="Enter state"
-                value={form.state}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="d-grid">
-              <button
-                type="submit"
-                className="btn py-2"
-                style={{
-                  background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
-                  border: "none",
-                  fontWeight: "600",
-                  color: "white",
-                  transition: "transform 0.2s ease"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-              >
-                Register Place
-              </button>
-            </div>
-          </form>
-        </div>
+        <div
+          style={{
+            width: "100px",
+            height: "4px",
+            borderRadius: "20px",
+            background: "linear-gradient(135deg,#3a7bd5,#00d2ff)",
+          }}
+        />
       </div>
-    </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Place Name</label>
+
+          <input
+            name="name"
+            className={inputClass}
+            placeholder="Enter place name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Place Code</label>
+
+          <input
+            name="code"
+            className={inputClass}
+            placeholder="Enter place code"
+            value={form.code}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">State</label>
+
+          <input
+            name="state"
+            className={inputClass}
+            placeholder="Enter state"
+            value={form.state}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="text-center mt-4">
+          <button
+            type="submit"
+            className="btn py-3"
+            style={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+              border: "none",
+              width: "260px",
+              margin: "0 auto",
+              fontWeight: "700",
+              fontSize: "1.2rem",
+              color: "white",
+              borderRadius: "16px",
+              transition: "all 0.3s ease",
+              boxShadow: "0 8px 20px rgba(59, 130, 246, 0.3)",
+            }}
+          >
+            <FaPaperPlane
+              style={{
+                marginRight: "10px",
+              }}
+            />
+            Register Place
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
