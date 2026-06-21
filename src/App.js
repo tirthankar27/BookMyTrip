@@ -21,6 +21,7 @@ import Confirmation from "./components/Confirmation";
 import Tickets from "./components/Tickets";
 import TicketDetails from "./components/TicketDetails";
 import AdminDashboard from "./components/AdminDashboard";
+import ChatAssistant from "./components/ChatAssistant";
 
 function App() {
   const apiKey = process.env.REACT_APP_BOOK_MY_TRIP_API;
@@ -44,6 +45,7 @@ function App() {
   const rejectPlace = process.env.REACT_APP_REJECT_PLACE;
   const approveBus = process.env.REACT_APP_APPROVE_BUS;
   const rejectBus = process.env.REACT_APP_REJECT_BUS;
+  const aiChatEndpoint = process.env.REACT_APP_AI_CHAT;
 
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => setDarkMode(!darkMode);
@@ -240,7 +242,7 @@ function App() {
               />
             </Routes>
           </div>
-
+          <ChatAssistant chatEndpoint={aiChatEndpoint} />
           <Footer />
         </div>
       </VantaBackground>
