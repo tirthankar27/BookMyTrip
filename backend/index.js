@@ -23,6 +23,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/auth.js"));
 app.use("/api/booking", require("./routes/booking.js"));
 app.use("/api/data", require("./routes/data.js"));
+app.use("/api/ai", require("./routes/ai"));
 
 app.listen(port, () => {
   console.log(`BookMyTrip listening on port ${port}`);
