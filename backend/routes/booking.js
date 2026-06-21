@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Booking = require("../models/Userbookings");
+const Hotel = require("../models/Hotels");
+const HotelBooking = require("../models/HotelBooking");
 const fetchUser = require("../middleware/fetchUser");
 const { body, validationResult } = require("express-validator");
 
@@ -171,5 +173,102 @@ router.delete("/cancel-seat", fetchUser, async (req, res) => {
     });
   }
 });
+
+// Create Hotel Booking
+router.post(
+  "/hotel",
+  fetchUser,
+  async (req, res) => {
+    try {
+      const {
+        hotelId,
+        roomType,
+        checkIn,
+        checkOut,
+        guests,
+      } = req.body;
+
+      const hotel = await Hotel.findById(
+        hotelId
+      );
+
+      if (!hotel) {
+        return res.status(404).json({
+          success: false,
+          message: "Hotel not found",
+        });
+      }
+
+      const selectedRoom =
+        hotel.roomTypes.find(
+          (room) =>
+            room.type === roomType
+        );
+
+      if (!selectedRoom) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Room type not found",
+        });
+      }
+
+      const roomsNeeded =
+        Math.ceil(guests / 2);
+
+      const nights =
+        Math.ceil(
+          (
+            new Date(checkOut) -
+            new Date(checkIn)
+          ) /
+            (1000 *
+              60 *
+              60 *
+              24)
+        );
+
+      const totalAmount =
+        selectedRoom.pricePerNight *
+        roomsNeeded *
+        nights;
+
+      const booking =
+        await HotelBooking.create({
+          hotel: hotel._id,
+
+          roomType:
+            selectedRoom.type,
+
+          user: req.user.id,
+
+          checkIn,
+          checkOut,
+
+          guests,
+
+          roomsBooked:
+            roomsNeeded,
+
+          totalAmount,
+
+          status: "confirmed",
+        });
+
+      res.status(201).json({
+        success: true,
+        booking,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Internal Server Error",
+      });
+    }
+  }
+);
 
 module.exports = router;

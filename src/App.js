@@ -3,6 +3,7 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Searchbus from "./components/Searchbus";
+import SearchHotel from "./components/SearchHotel";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import About from "./components/About";
@@ -13,6 +14,8 @@ import Weather from "./components/Weather";
 import RegisterBus from "./components/RegisterBus";
 import RegisterPlace from "./components/RegisterPlace";
 import BusResult from "./components/BusResult";
+import HotelResults from "./components/HotelResults";
+import HotelDetails from "./components/HotelDetails";
 import Passenger from "./components/Passenger";
 import Payment from "./components/Payment";
 import LoadingBar from "react-top-loading-bar";
@@ -61,6 +64,7 @@ function App() {
   const pendingHotels = process.env.REACT_APP_PENDING_HOTELS;
   const approveHotel = process.env.REACT_APP_APPROVE_HOTEL;
   const rejectHotel = process.env.REACT_APP_REJECT_HOTEL;
+  const hotelBookingEndpoint=process.env.REACT_APP_HOTEL_BOOKING
   const aiChatEndpoint = process.env.REACT_APP_AI_CHAT;
 
   const [darkMode, setDarkMode] = useState(false);
@@ -136,6 +140,9 @@ function App() {
                     pendingPackages={pendingPackages}
                     approvePackage={approvePackage}
                     rejectPackage={rejectPackage}
+                    pendingHotels={pendingHotels}
+                    approveHotel={approveHotel}
+                    rejectHotel={rejectHotel}
                   />
                 }
               />
@@ -175,6 +182,41 @@ function App() {
                     showAlert={showAlert}
                     busesendpoint={busesEndpoint}
                     placesendpoint={placesEndpoint}
+                  />
+                }
+              />
+              <Route
+                exact
+                path="/searchhotel"
+                element={
+                  <SearchHotel
+                    darkMode={darkMode}
+                    loadingRef={loadingRef}
+                    showAlert={showAlert}
+                    hotelsendpoint={hotelsEndpoint}
+                    placesendpoint={placesEndpoint}
+
+                  />
+                }
+              />
+              <Route
+                path="/hotelresults"
+                element={
+                  <HotelResults
+                    darkMode={darkMode}
+                    showAlert={showAlert}
+                  />
+                }
+              />
+              <Route
+                path="/hotel/:id"
+                element={
+                  <HotelDetails
+                    darkMode={darkMode}
+                    showAlert={showAlert}
+                    hotelBookingEndpoint={
+                      process.env.REACT_APP_HOTEL_BOOKING
+                    }
                   />
                 }
               />

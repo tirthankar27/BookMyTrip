@@ -43,7 +43,7 @@ const HotelSchema = new mongoose.Schema(
 
     destination: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "place",
+      ref: "Place",
       required: true,
     },
 
@@ -73,7 +73,7 @@ const HotelSchema = new mongoose.Schema(
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "user_from_emails",
     },
 
     status: {

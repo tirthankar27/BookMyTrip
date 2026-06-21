@@ -6,6 +6,7 @@ const Bus = require("../models/Buses");
 const Booking = require("../models/Userbookings");
 const Package = require("../models/Packages");
 const Hotel = require("../models/Hotels");
+const HotelBooking = require("../models/HotelBooking");
 const User = require("../models/Userbymail");
 const fetchUser = require("../middleware/fetchUser");
 const adminOnly = require("../middleware/admin");
@@ -23,10 +24,19 @@ router.post("/place", fetchUser, agencyOnly, async (req, res) => {
         .json({ success: false, message: "Name is required" });
     }
 
-    const place = new Place({ name, code, state, createdBy: req.user.id, status: "pending" });
+    const place = new Place({
+      name,
+      code,
+      state,
+      createdBy: req.user.id,
+      status: "pending",
+    });
     await place.save();
 
-    res.json({ success: true, message:"Place request submitted for approval" });
+    res.json({
+      success: true,
+      message: "Place request submitted for approval",
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -54,7 +64,7 @@ router.get("/placename", async (req, res) => {
 // GET /api/data/places Get all the available places
 router.get("/places", async (req, res) => {
   try {
-    const places = await Place.find({status: "approved"});
+    const places = await Place.find({ status: "approved" });
     res.json({ success: true, places });
   } catch (err) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -77,7 +87,7 @@ router.get("/routes", async (req, res) => {
 //GET /api/data/getbus
 router.get("/getbus", async (req, res) => {
   try {
-    const {id} = req.query;
+    const { id } = req.query;
     if (!id) {
       return res
         .status(400)
@@ -194,14 +204,14 @@ router.post("/bus", fetchUser, agencyOnly, async (req, res) => {
       fareMultiplier,
       busType,
       createdBy: req.user.id,
-      status:"pending"
+      status: "pending",
     });
 
     await bus.save();
 
     res.status(201).json({
       success: true,
-      message:"Bus registration request submitted",
+      message: "Bus registration request submitted",
       bus: {
         ...bus.toObject(),
         calculatedFare: Math.round(baseFare * fareMultiplier),
@@ -249,7 +259,7 @@ router.get("/buses", async (req, res) => {
     const buses = await Bus.find({
       source: source,
       destination: destination,
-      status: "approved"
+      status: "approved",
     });
     if (buses.length === 0) {
       return res
@@ -290,7 +300,7 @@ router.post("/availableseats", async (req, res) => {
     const totalSeats = bus.totalSeats || 0;
     const allSeats = Array.from({ length: totalSeats }, (_, i) => i + 1);
     const availableSeats = allSeats.filter(
-      (seat) => !bookedSeatNumbers.includes(seat)
+      (seat) => !bookedSeatNumbers.includes(seat),
     );
     res.json({ success: true, seats: availableSeats });
   } catch (err) {
@@ -300,50 +310,39 @@ router.post("/availableseats", async (req, res) => {
 });
 
 // GET /api/data//admin/pending-places Pending places
-router.get(
-  "/admin/pending-places",
-  fetchUser,
-  adminOnly,
-  async (req, res) => {
-    try {
-      const places = await Place.find({
-        status: "pending",
-      }).populate(
-        "createdBy",
-        "username email"
-      );
+router.get("/admin/pending-places", fetchUser, adminOnly, async (req, res) => {
+  try {
+    const places = await Place.find({
+      status: "pending",
+    }).populate("createdBy", "username email");
 
-      res.json({
-        success: true,
-        count: places.length,
-        places,
-      });
-    } catch (err) {
-      console.error(err);
+    res.json({
+      success: true,
+      count: places.length,
+      places,
+    });
+  } catch (err) {
+    console.error(err);
 
-      res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-      });
-    }
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
-);
+});
 
 //PUT /api/data/admin/approve-place/:id Approve place
 router.put(
   "/admin/approve-place/:id",
   fetchUser,
   adminOnly,
-  async (req,res)=>{
-      await Place.findByIdAndUpdate(
-          req.params.id,
-          {status:"approved"}
-      );
+  async (req, res) => {
+    await Place.findByIdAndUpdate(req.params.id, { status: "approved" });
 
-      res.json({
-          success:true
-      });
-  }
+    res.json({
+      success: true,
+    });
+  },
 );
 
 //PUT /api/data/admin/reject-place/:id Reject place
@@ -351,115 +350,97 @@ router.put(
   "/admin/reject-place/:id",
   fetchUser,
   adminOnly,
-  async (req,res)=>{
-      await Place.findByIdAndUpdate(
-          req.params.id,
-          {status:"rejected"}
-      );
+  async (req, res) => {
+    await Place.findByIdAndUpdate(req.params.id, { status: "rejected" });
 
-      res.json({
-          success:true
-      });
-  }
+    res.json({
+      success: true,
+    });
+  },
 );
 
 //GET api/data//admin/pending-buses Pending buses
-router.get(
-  "/admin/pending-buses",
-  fetchUser,
-  adminOnly,
-  async (req, res) => {
-    try {
-      const buses = await Bus.find({
-        status: "pending",
-      })
-        .populate("source", "name")
-        .populate("destination", "name")
-        .populate("createdBy", "username email");
+router.get("/admin/pending-buses", fetchUser, adminOnly, async (req, res) => {
+  try {
+    const buses = await Bus.find({
+      status: "pending",
+    })
+      .populate("source", "name")
+      .populate("destination", "name")
+      .populate("createdBy", "username email");
 
-      res.json({
-        success: true,
-        count: buses.length,
-        buses,
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-      });
-    }
+    res.json({
+      success: true,
+      count: buses.length,
+      buses,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
-);
+});
 
 //PUT /api/data//admin/approve-bus/:id Approve bus
-router.put(
-  "/admin/approve-bus/:id",
-  fetchUser,
-  adminOnly,
-  async (req, res) => {
-    try {
-      const bus = await Bus.findById(req.params.id);
+router.put("/admin/approve-bus/:id", fetchUser, adminOnly, async (req, res) => {
+  try {
+    const bus = await Bus.findById(req.params.id);
 
-      if (!bus) {
-        return res.status(404).json({
-          success: false,
-          message: "Bus request not found",
-        });
-      }
-
-      bus.status = "approved";
-
-      await bus.save();
-
-      res.json({
-        success: true,
-        message: "Bus approved successfully",
-        bus,
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({
+    if (!bus) {
+      return res.status(404).json({
         success: false,
-        message: "Internal Server Error",
+        message: "Bus request not found",
       });
     }
+
+    bus.status = "approved";
+
+    await bus.save();
+
+    res.json({
+      success: true,
+      message: "Bus approved successfully",
+      bus,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
-);
+});
 
 //PUT /api/data//admin/reject-bus/:id Reject bus
-router.put(
-  "/admin/reject-bus/:id",
-  fetchUser,
-  adminOnly,
-  async (req, res) => {
-    try {
-      const bus = await Bus.findById(req.params.id);
+router.put("/admin/reject-bus/:id", fetchUser, adminOnly, async (req, res) => {
+  try {
+    const bus = await Bus.findById(req.params.id);
 
-      if (!bus) {
-        return res.status(404).json({
-          success: false,
-          message: "Bus request not found",
-        });
-      }
-
-      bus.status = "rejected";
-
-      await bus.save();
-
-      res.json({
-        success: true,
-        message: "Bus rejected",
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({
+    if (!bus) {
+      return res.status(404).json({
         success: false,
-        message: "Internal Server Error",
+        message: "Bus request not found",
       });
     }
+
+    bus.status = "rejected";
+
+    await bus.save();
+
+    res.json({
+      success: true,
+      message: "Bus rejected",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
-);
+});
 
 // POST /api/data/package
 router.post("/package", fetchUser, agencyOnly, async (req, res) => {
@@ -507,89 +488,103 @@ router.post("/package", fetchUser, agencyOnly, async (req, res) => {
 });
 
 // GET /api/data/admin/pending-packages
-router.get("/admin/pending-packages", fetchUser, adminOnly, async (req, res) => {
-  try {
-    const packages = await Package.find({
-      status: "pending",
-    })
-      .populate("destination", "name")
-      .populate("createdBy", "username email");
+router.get(
+  "/admin/pending-packages",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const packages = await Package.find({
+        status: "pending",
+      })
+        .populate("destination", "name")
+        .populate("createdBy", "username email");
 
-    res.json({
-      success: true,
-      packages,
-    });
-  } catch (err) {
-    console.error(err);
+      res.json({
+        success: true,
+        packages,
+      });
+    } catch (err) {
+      console.error(err);
 
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-});
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  },
+);
 
 // PUT /api/data/admin/approve-package/:id
-router.put("/admin/approve-package/:id", fetchUser, adminOnly, async (req, res) => {
-  try {
-    const packageDoc = await Package.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: "approved",
-      },
-      {
-        new: true,
-      }
-    );
+router.put(
+  "/admin/approve-package/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const packageDoc = await Package.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "approved",
+        },
+        {
+          new: true,
+        },
+      );
 
-    res.json({
-      success: true,
-      package: packageDoc,
-    });
-  } catch (err) {
-    console.error(err);
+      res.json({
+        success: true,
+        package: packageDoc,
+      });
+    } catch (err) {
+      console.error(err);
 
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-});
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  },
+);
 
 // PUT /api/data/admin/reject-package/:id
-router.put("/admin/reject-package/:id", fetchUser, adminOnly, async (req, res) => {
-  try {
-    const packageDoc = await Package.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: "rejected",
-      },
-      {
-        new: true,
-      }
-    );
+router.put(
+  "/admin/reject-package/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const packageDoc = await Package.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "rejected",
+        },
+        {
+          new: true,
+        },
+      );
 
-    res.json({
-      success: true,
-      package: packageDoc,
-    });
-  } catch (err) {
-    console.error(err);
+      res.json({
+        success: true,
+        package: packageDoc,
+      });
+    } catch (err) {
+      console.error(err);
 
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-});
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  },
+);
 
 // GET /api/data/packages
 router.get("/packages", async (req, res) => {
   try {
     const packages = await Package.find({
       status: "approved",
-    })
-      .populate("destination", "name state");
+    }).populate("destination", "name state");
 
     res.json({
       success: true,
@@ -608,9 +603,7 @@ router.get("/packages", async (req, res) => {
 // GET /api/data/package/:id
 router.get("/package/:id", async (req, res) => {
   try {
-    const packageDoc = await Package.findById(
-      req.params.id
-    )
+    const packageDoc = await Package.findById(req.params.id)
       .populate("destination", "name state")
       .populate("createdBy", "username email");
 
@@ -638,9 +631,7 @@ router.get("/package/:id", async (req, res) => {
 // POST /api/data/hotel
 router.post("/hotel", fetchUser, agencyOnly, async (req, res) => {
   try {
-    const user = await User.findById(
-      req.user.id
-    );
+    const user = await User.findById(req.user.id);
 
     const {
       name,
@@ -702,18 +693,21 @@ router.get("/admin/pending-hotels", fetchUser, adminOnly, async (req, res) => {
 });
 
 // PUT /api/data/admin/approve-hotel/:id
-router.put("/admin/approve-hotel/:id", fetchUser, adminOnly, async (req, res) => {
+router.put(
+  "/admin/approve-hotel/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
     try {
-      const hotel =
-        await Hotel.findByIdAndUpdate(
-          req.params.id,
-          {
-            status: "approved",
-          },
-          {
-            new: true,
-          }
-        );
+      const hotel = await Hotel.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "approved",
+        },
+        {
+          new: true,
+        },
+      );
 
       res.json({
         success: true,
@@ -727,22 +721,25 @@ router.put("/admin/approve-hotel/:id", fetchUser, adminOnly, async (req, res) =>
         message: "Internal Server Error",
       });
     }
-  }
+  },
 );
 
 // PUT /api/data/admin/reject-hotel/:id
-router.put("/admin/reject-hotel/:id", fetchUser, adminOnly, async (req, res) => {
+router.put(
+  "/admin/reject-hotel/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
     try {
-      const hotel =
-        await Hotel.findByIdAndUpdate(
-          req.params.id,
-          {
-            status: "rejected",
-          },
-          {
-            new: true,
-          }
-        );
+      const hotel = await Hotel.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "rejected",
+        },
+        {
+          new: true,
+        },
+      );
 
       res.json({
         success: true,
@@ -756,17 +753,25 @@ router.put("/admin/reject-hotel/:id", fetchUser, adminOnly, async (req, res) => 
         message: "Internal Server Error",
       });
     }
-  }
+  },
 );
 
 // GET /api/data/hotels
 router.get("/hotels", async (req, res) => {
+  const { destination } = req.query;
+
   try {
-    const hotels = await Hotel.find({
+    let query = {
       status: "approved",
-    }).populate(
+    };
+
+    if (destination) {
+      query.destination = destination;
+    }
+
+    const hotels = await Hotel.find(query).populate(
       "destination",
-      "name state"
+      "name state",
     );
 
     res.json({
@@ -786,17 +791,9 @@ router.get("/hotels", async (req, res) => {
 // GET /api/data/hotel/:id
 router.get("/hotel/:id", async (req, res) => {
   try {
-    const hotel = await Hotel.findById(
-      req.params.id
-    )
-      .populate(
-        "destination",
-        "name state"
-      )
-      .populate(
-        "createdBy",
-        "username email"
-      );
+    const hotel = await Hotel.findById(req.params.id)
+      .populate("destination", "name state")
+      .populate("createdBy", "username email");
 
     if (!hotel) {
       return res.status(404).json({
@@ -818,5 +815,90 @@ router.get("/hotel/:id", async (req, res) => {
     });
   }
 });
+
+//GET /api/data/admin/pending-hotels
+router.get("/admin/pending-hotels", fetchUser, adminOnly, async (req, res) => {
+  try {
+    const hotels = await Hotel.find({
+      status: "pending",
+    })
+      .populate("destination", "name")
+      .populate("createdBy", "username");
+
+    res.json({
+      success: true,
+      hotels,
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
+
+//PUT /api/data/admin/aprove-hotel/:id
+router.put(
+  "/admin/approve-hotel/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const hotel = await Hotel.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "approved",
+        },
+        {
+          new: true,
+        },
+      );
+
+      res.json({
+        success: true,
+        hotel,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+      });
+    }
+  },
+);
+
+//PUT /api/data/admin/reject-hotel/:id
+router.put(
+  "/admin/reject-hotel/:id",
+  fetchUser,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const hotel = await Hotel.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "rejected",
+        },
+        {
+          new: true,
+        },
+      );
+
+      res.json({
+        success: true,
+        hotel,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+      });
+    }
+  },
+);
 
 module.exports = router;
