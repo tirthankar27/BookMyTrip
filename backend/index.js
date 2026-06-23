@@ -10,7 +10,7 @@ const cors = require("cors");
 
 // Simple CORS configuration
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://book-my-trip-9wmq.vercel.app"]
   // credentials: true
 }));
 
