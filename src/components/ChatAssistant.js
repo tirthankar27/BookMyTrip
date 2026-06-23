@@ -68,19 +68,20 @@ const ChatAssistant = (props) => {
           position: "fixed",
           bottom: "25px",
           right: "25px",
-          width: "60px",
-          height: "60px",
+          width: "72px",
+          height: "72px",
+          fontSize: "30px",
+          background: "linear-gradient(135deg,#3a7bd5,#00d2ff)",
+          boxShadow: "0 12px 30px rgba(59,130,246,.45)",
+          transition: "all .3s ease",
           borderRadius: "50%",
           border: "none",
           cursor: "pointer",
           zIndex: 9999,
-          fontSize: "24px",
           color: "white",
-          background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
         }}
       >
-        💬
+        🤖
       </button>
 
       {/* Chat Window */}
@@ -88,15 +89,29 @@ const ChatAssistant = (props) => {
         <div
           style={{
             position: "fixed",
-            bottom: "95px",
+            bottom: "100px",
             right: "25px",
-            width: "340px",
-            height: "500px",
-            background: "rgba(255,255,255,0.95)",
-            borderRadius: "20px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+            width: "380px",
+            height: "600px",
+
+            background: props.darkMode
+              ? "rgba(15,23,42,0.88)"
+              : "rgba(255,255,255,0.78)",
+
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+
+            border: props.darkMode
+              ? "1px solid rgba(255,255,255,0.08)"
+              : "1px solid rgba(255,255,255,0.35)",
+
+            borderRadius: "24px",
+
+            boxShadow: "0 25px 60px rgba(0,0,0,.25)",
+
             zIndex: 9999,
             overflow: "hidden",
+
             display: "flex",
             flexDirection: "column",
           }}
@@ -109,7 +124,49 @@ const ChatAssistant = (props) => {
               background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
             }}
           >
-            🤖 BookMyTrip Assistant
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+              }}
+            >
+              <div
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,.15)",
+
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "20px",
+                }}
+              >
+                🤖
+              </div>
+
+              <div>
+                <div
+                  style={{
+                    fontWeight: "700",
+                    fontSize: "1rem",
+                  }}
+                >
+                  TripAI
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "12px",
+                    opacity: 0.85,
+                  }}
+                >
+                  Travel Assistant
+                </div>
+              </div>
+            </div>
           </div>
 
           <div
@@ -134,8 +191,18 @@ const ChatAssistant = (props) => {
                     maxWidth: "80%",
                     padding: "10px",
                     borderRadius: "12px",
-                    background: msg.sender === "user" ? "#3a7bd5" : "#f0f0f0",
-                    color: msg.sender === "user" ? "white" : "black",
+                    background:
+                      msg.sender === "user"
+                        ? "linear-gradient(135deg,#3a7bd5,#00d2ff)"
+                        : props.darkMode
+                          ? "rgba(255,255,255,.08)"
+                          : "rgba(255,255,255,.95)",
+                    color:
+                      msg.sender === "user"
+                        ? "#fff"
+                        : props.darkMode
+                          ? "#fff"
+                          : "#111827",
                     whiteSpace: "pre-wrap",
                   }}
                 >
@@ -185,9 +252,20 @@ const ChatAssistant = (props) => {
               placeholder="Type your message..."
               style={{
                 flex: 1,
-                padding: "10px",
-                borderRadius: "10px",
-                border: "1px solid #ccc",
+
+                padding: "12px 16px",
+
+                borderRadius: "14px",
+
+                border: props.darkMode
+                  ? "1px solid rgba(255,255,255,.08)"
+                  : "1px solid rgba(0,0,0,.08)",
+
+                background: props.darkMode ? "rgba(255,255,255,.08)" : "#fff",
+
+                color: props.darkMode ? "#fff" : "#111827",
+
+                outline: "none",
               }}
             />
 
@@ -195,11 +273,23 @@ const ChatAssistant = (props) => {
               onClick={handleSend}
               style={{
                 marginLeft: "10px",
+
+                width: "48px",
+                height: "48px",
+
                 border: "none",
-                borderRadius: "10px",
+
+                borderRadius: "50%",
+
                 color: "white",
-                padding: "0 15px",
-                background: "linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)",
+
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+
+                background: "linear-gradient(135deg,#3a7bd5,#00d2ff)",
+
+                boxShadow: "0 8px 20px rgba(59,130,246,.35)",
               }}
             >
               Send

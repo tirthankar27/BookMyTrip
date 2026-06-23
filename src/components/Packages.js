@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Packages(props) {
   const [packages, setPackages] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const destinationId = location.state?.destination;
   useEffect(() => {
     fetchPackages();
   }, []);
@@ -50,63 +52,70 @@ export default function Packages(props) {
             </div>
           ) : (
             <div className="row">
-              {packages.map((pkg) => (
-                <div className="col-md-6 col-lg-4 mb-4" key={pkg._id}>
-                  <div className={`card border-0 shadow-lg h-100 ${cardClass}`}>
-                    {pkg.image && (
-                      <img
-                        src={pkg.image}
-                        alt={pkg.title}
-                        className="card-img-top"
-                        style={{
-                          height: "220px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    )}
+              {packages
+                .filter(
+                  (pkg) =>
+                    !destinationId || pkg.destination?._id === destinationId,
+                )
+                .map((pkg) => (
+                  <div className="col-md-6 col-lg-4 mb-4" key={pkg._id}>
+                    <div
+                      className={`card border-0 shadow-lg h-100 ${cardClass}`}
+                    >
+                      {pkg.image && (
+                        <img
+                          src={pkg.image}
+                          alt={pkg.title}
+                          className="card-img-top"
+                          style={{
+                            height: "220px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
 
-                    <div className="card-body">
-                      <h5 className="card-title fw-bold" style={gradientText}>
-                        {pkg.title}
-                      </h5>
+                      <div className="card-body">
+                        <h5 className="card-title fw-bold" style={gradientText}>
+                          {pkg.title}
+                        </h5>
 
-                      <p>📍 {pkg.destination?.name}</p>
+                        <p>📍 {pkg.destination?.name}</p>
 
-                      <p>⏳ {pkg.duration}</p>
+                        <p>⏳ {pkg.duration}</p>
 
-                      <p>💰 ₹{pkg.price}</p>
+                        <p>💰 ₹{pkg.price}</p>
 
-                      <p
-                        style={{
-                          minHeight: "80px",
-                        }}
-                      >
-                        {pkg.description}
-                      </p>
+                        <p
+                          style={{
+                            minHeight: "80px",
+                          }}
+                        >
+                          {pkg.description}
+                        </p>
 
-                      <button
-                        className="btn w-100"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
-                          border: "none",
-                          width: "260px",
-                          margin: "0 auto",
-                          fontWeight: "700",
-                          fontSize: "1.2rem",
-                          color: "white",
-                          borderRadius: "16px",
-                          transition: "all 0.3s ease",
-                          boxShadow: "0 8px 20px rgba(59, 130, 246, 0.3)",
-                        }}
-                        onClick={() => navigate(`/package/${pkg._id}`)}
-                      >
-                        View Details
-                      </button>
+                        <button
+                          className="btn w-100"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+                            border: "none",
+                            width: "260px",
+                            margin: "0 auto",
+                            fontWeight: "700",
+                            fontSize: "1.2rem",
+                            color: "white",
+                            borderRadius: "16px",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 8px 20px rgba(59, 130, 246, 0.3)",
+                          }}
+                          onClick={() => navigate(`/package/${pkg._id}`)}
+                        >
+                          View Details
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </div>

@@ -102,6 +102,86 @@ router.get("/fetchbookings", fetchUser, async (req, res) => {
   }
 });
 
+// Fetch Hotel Bookings
+router.get(
+  "/fetchhotelbookings",
+  fetchUser,
+  async (req, res) => {
+    try {
+      const bookings =
+        await HotelBooking.find({
+          user: req.user.id,
+        })
+          .populate(
+            "hotel",
+            "name address hotelImages"
+          )
+          .sort({
+            createdAt: -1,
+          });
+
+      res.status(200).json({
+        success: true,
+        count: bookings.length,
+        bookings,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Internal Server Error",
+      });
+    }
+  }
+);
+
+// Cancel Hotel Booking
+router.delete(
+  "/cancel-hotel-booking",
+  fetchUser,
+  async (req, res) => {
+    try {
+      const { bookingId } =
+        req.body;
+
+      const booking =
+        await HotelBooking.findOne({
+          _id: bookingId,
+          user: req.user.id,
+        });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Booking not found",
+        });
+      }
+
+      booking.status =
+        "cancelled";
+
+      await booking.save();
+
+      res.json({
+        success: true,
+        message:
+          "Hotel booking cancelled",
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Internal Server Error",
+      });
+    }
+  }
+);
+
 // Cancel individual seat '/api/booking/cancel-seat'
 router.delete("/cancel-seat", fetchUser, async (req, res) => {
   try {

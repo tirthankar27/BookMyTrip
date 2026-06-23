@@ -156,9 +156,29 @@ export default function Navbar(props) {
               <li className="nav-item">
                 <Link
                   className="nav-link fs-5 position-relative"
-                  to="/packages"
+                  to="/searchhotel"
                   style={
-                    location.pathname === "/packages"
+                    location.pathname === "/searchhotel"
+                      ? gradientText
+                      : navLinkStyle
+                  }
+                >
+                  Hotels
+                  <span
+                    className="nav-link-hover-effect"
+                    style={{
+                      ...navLinkHoverEffect,
+                      width: location.pathname === "/searchhotel" ? "100%" : "0",
+                    }}
+                  ></span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link fs-5 position-relative"
+                  to="/searchpackage"
+                  style={
+                    location.pathname === "/searchpackage"
                       ? gradientText
                       : navLinkStyle
                   }
@@ -168,7 +188,7 @@ export default function Navbar(props) {
                     className="nav-link-hover-effect"
                     style={{
                       ...navLinkHoverEffect,
-                      width: location.pathname === "/packages" ? "100%" : "0",
+                      width: location.pathname === "/searchpackage" ? "100%" : "0",
                     }}
                   ></span>
                 </Link>
@@ -194,9 +214,9 @@ export default function Navbar(props) {
               <li className="nav-item">
                 <Link
                   className="nav-link fs-5 position-relative"
-                  to="/ticket"
+                  to="/bookings"
                   style={
-                    location.pathname === "/ticket"
+                    location.pathname === "/bookings"
                       ? gradientText
                       : navLinkStyle
                   }

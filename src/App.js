@@ -25,6 +25,7 @@ import Tickets from "./components/Tickets";
 import TicketDetails from "./components/TicketDetails";
 import AdminDashboard from "./components/AdminDashboard";
 import RegisterPackage from "./components/RegisterPackage";
+import SearchPackage from "./components/SearchPackage";
 import Packages from "./components/Packages";
 import PackageDetails from "./components/PackageDetails";
 import AgencyPortal from "./components/AgencyPortal";
@@ -65,6 +66,8 @@ function App() {
   const approveHotel = process.env.REACT_APP_APPROVE_HOTEL;
   const rejectHotel = process.env.REACT_APP_REJECT_HOTEL;
   const hotelBookingEndpoint=process.env.REACT_APP_HOTEL_BOOKING
+  const fetchHotelBookingsEndpoint=process.env.REACT_APP_FETCH_HOTEL_BOOKINGS
+  const cancelHotelBookingEndpoint= process.env.REACT_APP_CANCEL_HOTEL_BOOKING
   const aiChatEndpoint = process.env.REACT_APP_AI_CHAT;
 
   const [darkMode, setDarkMode] = useState(false);
@@ -200,6 +203,16 @@ function App() {
                 }
               />
               <Route
+                path="/searchpackage"
+                element={
+                  <SearchPackage
+                    darkMode={darkMode}
+                    placesendpoint={placesEndpoint}
+                    showAlert={showAlert}
+                  />
+                }
+              />
+              <Route
                 path="/hotelresults"
                 element={
                   <HotelResults
@@ -315,7 +328,7 @@ function App() {
                 }
               />
               <Route
-                path="/ticket"
+                path="/bookings"
                 element={
                   <Tickets
                     darkMode={darkMode}
@@ -323,6 +336,8 @@ function App() {
                     fetchBooking={fetchBooking}
                     deletebooking={deleteBooking}
                     deleteselectedseat={cancelSeat}
+                    fetchHotelBookingsEndpoint={fetchHotelBookingsEndpoint}
+                    cancelHotelBookingEndpoint={cancelHotelBookingEndpoint}
                     loadingRef={loadingRef}
                     placename={placeName}
                     showAlert={showAlert}

@@ -230,41 +230,6 @@ export default function Searchbus(props) {
 
   return (
     <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        overflow: "hidden",
-        pointerEvents: "none",
-        zIndex: 0
-      }}>
-        <div style={{
-          position: "absolute",
-          width: "300px",
-          height: "300px",
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
-          filter: "blur(80px)",
-          opacity: props.darkMode ? 0.2 : 0.1,
-          top: "-100px",
-          right: "-50px",
-          animation: "float 20s infinite"
-        }} />
-        <div style={{
-          position: "absolute",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)",
-          filter: "blur(100px)",
-          opacity: props.darkMode ? 0.15 : 0.1,
-          bottom: "-150px",
-          left: "-100px",
-          animation: "floatReverse 25s infinite"
-        }} />
-      </div>
 
       <div className="container d-flex flex-column align-items-center pt-5" style={{ position: "relative", zIndex: 1 }}>
         <h1
