@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Booking = require("../models/Userbookings");
+const Hotel = require("../models/Hotels");
+const HotelBooking = require("../models/HotelBooking");
 const fetchUser = require("../middleware/fetchUser");
 const { body, validationResult } = require("express-validator");
 
@@ -100,6 +102,86 @@ router.get("/fetchbookings", fetchUser, async (req, res) => {
   }
 });
 
+// Fetch Hotel Bookings
+router.get(
+  "/fetchhotelbookings",
+  fetchUser,
+  async (req, res) => {
+    try {
+      const bookings =
+        await HotelBooking.find({
+          user: req.user.id,
+        })
+          .populate(
+            "hotel",
+            "name address hotelImages"
+          )
+          .sort({
+            createdAt: -1,
+          });
+
+      res.status(200).json({
+        success: true,
+        count: bookings.length,
+        bookings,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Internal Server Error",
+      });
+    }
+  }
+);
+
+// Cancel Hotel Booking
+router.delete(
+  "/cancel-hotel-booking",
+  fetchUser,
+  async (req, res) => {
+    try {
+      const { bookingId } =
+        req.body;
+
+      const booking =
+        await HotelBooking.findOne({
+          _id: bookingId,
+          user: req.user.id,
+        });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Booking not found",
+        });
+      }
+
+      booking.status =
+        "cancelled";
+
+      await booking.save();
+
+      res.json({
+        success: true,
+        message:
+          "Hotel booking cancelled",
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Internal Server Error",
+      });
+    }
+  }
+);
+
 // Cancel individual seat '/api/booking/cancel-seat'
 router.delete("/cancel-seat", fetchUser, async (req, res) => {
   try {
@@ -171,5 +253,102 @@ router.delete("/cancel-seat", fetchUser, async (req, res) => {
     });
   }
 });
+
+// Create Hotel Booking
+router.post(
+  "/hotel",
+  fetchUser,
+  async (req, res) => {
+    try {
+      const {
+        hotelId,
+        roomType,
+        checkIn,
+        checkOut,
+        guests,
+      } = req.body;
+
+      const hotel = await Hotel.findById(
+        hotelId
+      );
+
+      if (!hotel) {
+        return res.status(404).json({
+          success: false,
+          message: "Hotel not found",
+        });
+      }
+
+      const selectedRoom =
+        hotel.roomTypes.find(
+          (room) =>
+            room.type === roomType
+        );
+
+      if (!selectedRoom) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Room type not found",
+        });
+      }
+
+      const roomsNeeded =
+        Math.ceil(guests / 2);
+
+      const nights =
+        Math.ceil(
+          (
+            new Date(checkOut) -
+            new Date(checkIn)
+          ) /
+            (1000 *
+              60 *
+              60 *
+              24)
+        );
+
+      const totalAmount =
+        selectedRoom.pricePerNight *
+        roomsNeeded *
+        nights;
+
+      const booking =
+        await HotelBooking.create({
+          hotel: hotel._id,
+
+          roomType:
+            selectedRoom.type,
+
+          user: req.user.id,
+
+          checkIn,
+          checkOut,
+
+          guests,
+
+          roomsBooked:
+            roomsNeeded,
+
+          totalAmount,
+
+          status: "confirmed",
+        });
+
+      res.status(201).json({
+        success: true,
+        booking,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Internal Server Error",
+      });
+    }
+  }
+);
 
 module.exports = router;
