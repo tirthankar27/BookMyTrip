@@ -68,7 +68,7 @@ export default function Navbar(props) {
 
   // Enhanced toggle button style
   const toggleButtonStyle = {
-    background: props.darkMode 
+    background: props.darkMode
       ? "linear-gradient(135deg, #2c3e50 0%, #3498db 100%)"
       : "linear-gradient(135deg, #f39c12 0%, #f1c40f 100%)",
     border: "none",
@@ -81,7 +81,7 @@ export default function Navbar(props) {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    boxShadow: props.darkMode 
+    boxShadow: props.darkMode
       ? "0 4px 15px rgba(52, 152, 219, 0.3)"
       : "0 4px 15px rgba(243, 156, 18, 0.3)",
   };
@@ -156,6 +156,46 @@ export default function Navbar(props) {
               <li className="nav-item">
                 <Link
                   className="nav-link fs-5 position-relative"
+                  to="/searchhotel"
+                  style={
+                    location.pathname === "/searchhotel"
+                      ? gradientText
+                      : navLinkStyle
+                  }
+                >
+                  Hotels
+                  <span
+                    className="nav-link-hover-effect"
+                    style={{
+                      ...navLinkHoverEffect,
+                      width: location.pathname === "/searchhotel" ? "100%" : "0",
+                    }}
+                  ></span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link fs-5 position-relative"
+                  to="/searchpackage"
+                  style={
+                    location.pathname === "/searchpackage"
+                      ? gradientText
+                      : navLinkStyle
+                  }
+                >
+                  Packages
+                  <span
+                    className="nav-link-hover-effect"
+                    style={{
+                      ...navLinkHoverEffect,
+                      width: location.pathname === "/searchpackage" ? "100%" : "0",
+                    }}
+                  ></span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link fs-5 position-relative"
                   to="/about"
                   style={
                     location.pathname === "/about" ? gradientText : navLinkStyle
@@ -174,9 +214,11 @@ export default function Navbar(props) {
               <li className="nav-item">
                 <Link
                   className="nav-link fs-5 position-relative"
-                  to="/ticket"
+                  to="/bookings"
                   style={
-                    location.pathname === "/ticket" ? gradientText : navLinkStyle
+                    location.pathname === "/bookings"
+                      ? gradientText
+                      : navLinkStyle
                   }
                 >
                   Bookings
@@ -211,33 +253,17 @@ export default function Navbar(props) {
               </li>
               {role === "agency" && (
                 <>
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link fs-5 position-relative"
-                      to="/registerplace"
-                      style={
-                        location.pathname === "/registerplace"
-                          ? gradientText
-                          : navLinkStyle
-                      }
-                    >
-                      Register Place
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link fs-5 position-relative"
-                      to="/registerbus"
-                      style={
-                        location.pathname === "/registerbus"
-                          ? gradientText
-                          : navLinkStyle
-                      }
-                    >
-                      Register Bus
-                    </Link>
-                  </li>
+                  <Link
+                    className="nav-link fs-5 position-relative"
+                    to="/agency"
+                    style={
+                      location.pathname === "/admin"
+                        ? gradientText
+                        : navLinkStyle
+                    }
+                  >
+                    Agency Portal
+                  </Link>
                 </>
               )}
               {role === "admin" && (
@@ -285,7 +311,8 @@ export default function Navbar(props) {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "scale(1.05)";
-                      e.currentTarget.style.boxShadow = "0 5px 15px rgba(255, 65, 108, 0.4)";
+                      e.currentTarget.style.boxShadow =
+                        "0 5px 15px rgba(255, 65, 108, 0.4)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "scale(1)";
@@ -313,7 +340,8 @@ export default function Navbar(props) {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "scale(1.05)";
-                      e.currentTarget.style.boxShadow = "0 5px 15px rgba(58, 123, 213, 0.4)";
+                      e.currentTarget.style.boxShadow =
+                        "0 5px 15px rgba(58, 123, 213, 0.4)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "scale(1)";
@@ -324,16 +352,18 @@ export default function Navbar(props) {
                   </Link>
                 </>
               )}
-              
+
               {/* Enhanced Dark Mode Toggle with Icons */}
               <div className="d-flex align-items-center">
                 <label className="theme-toggle-switch">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={props.darkMode}
                     onChange={props.toggleDarkMode}
                   />
-                  <span className={`theme-slider ${props.darkMode ? '' : 'light'}`}>
+                  <span
+                    className={`theme-slider ${props.darkMode ? "" : "light"}`}
+                  >
                     <FontAwesomeIcon icon={faMoon} className="theme-icon" />
                     <FontAwesomeIcon icon={faSun} className="theme-icon" />
                   </span>

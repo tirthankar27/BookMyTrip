@@ -3,6 +3,8 @@ const router = express.Router();
 const { GoogleGenAI } = require("@google/genai");
 const Bus = require("../models/Buses");
 const Place = require("../models/Places");
+const Hotel = require("../models/Hotels");
+const Package = require("../models/Packages");
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -32,10 +34,30 @@ router.post("/chat", aiLimiter, async (req, res) => {
       .populate("source", "name")
       .populate("destination", "name")
       .select("name source destination");
+    const hotels = await Hotel.find({
+      status: "approved",
+    })
+      .populate("destination", "name")
+      .select("name destination");
+
+    const packages = await Package.find({
+      status: "approved",
+    })
+      .populate("destination", "name")
+      .select("title destination duration price");
+
     const placeList = places.map((p) => p.name).join(", ");
 
     const busList = buses
       .map((b) => `${b.name}: ${b.source?.name} → ${b.destination?.name}`)
+      .join("\n");
+
+    const hotelList = hotels
+      .map((h) => `${h.name} - ${h.destination?.name}`)
+      .join("\n");
+
+    const packageList = packages
+      .map((p) => `${p.title} - ${p.destination?.name} - ₹${p.price}`)
       .join("\n");
 
     // Direct BookMyTrip lookup before Gemini
@@ -94,16 +116,50 @@ router.post("/chat", aiLimiter, async (req, res) => {
       });
     }
 
+    if (lowerMessage.includes("hotel") || lowerMessage.includes("stay") || lowerMessage.includes("accommodation")) {
+      const matchedHotels = hotels.filter((hotel) =>
+        foundPlaces.some(
+          (p) => p._id.toString() === hotel.destination?._id?.toString(),
+        ),
+      );
+
+      if (matchedHotels.length > 0) {
+        return res.json({
+          success: true,
+          reply:
+            "🏨 Available Hotels:\n\n" +
+            matchedHotels.map((h) => `• ${h.name}`).join("\n"),
+        });
+      }
+    }
+    if (lowerMessage.includes("package") || lowerMessage.includes("packages")) {
+      const matchedPackages = packages.filter((pkg) =>
+        foundPlaces.some(
+          (p) => p._id.toString() === pkg.destination?._id?.toString(),
+        ),
+      );
+
+      if (matchedPackages.length > 0) {
+        return res.json({
+          success: true,
+          reply:
+            "🎒 Available Packages:\n\n" +
+            matchedPackages.map((p) => `• ${p.title} - ₹${p.price}`).join("\n"),
+        });
+      }
+    }
     const prompt = `
     You are BookMyTrip AI Assistant.
 
     You are helping users on a bus booking platform.
 
-    Approved Places:
-    ${placeList}
+    Approved Places:${placeList}
 
-    Approved Buses:
-    ${busList}
+    Approved Buses:${busList}
+
+    Approved Hotels:${hotelList}
+
+    Approved Packages:${packageList}
 
     Rules:
 
@@ -114,6 +170,8 @@ router.post("/chat", aiLimiter, async (req, res) => {
     - Available places
     - Available buses
     - Bus routes
+    - Hotels there
+    - Packages
     Then use only the BookMyTrip data provided above.
 
     3. For travel recommendations, itineraries, tourist attractions, sightseeing, food, weather, culture, or trip planning, use your general travel knowledge and do NOT limit answers to BookMyTrip places.
@@ -126,7 +184,8 @@ router.post("/chat", aiLimiter, async (req, res) => {
     - Top attractions
     - Best season to visit
     - Travel tips
-
+    - Try to suggest top 2 packages if the destination is from approved places
+  
     7. Keep replies under 250 words.
 
     8. If BookMyTrip does not serve a requested route, clearly mention that while still helping the user with travel information.
